@@ -1,0 +1,102 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { User, Mail, Lock, Phone, Calendar, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import AnimatedPasswordInput from '../../components/ui/AnimatedPasswordInput';
+
+export default function RegisterPatient() {
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md mx-auto"
+        >
+            <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">إنشاء حساب مريض</h2>
+                <p className="text-slate-400">سجل الآن لمتابعة صحتك وحجز مواعيدك بسهولة</p>
+            </div>
+
+            <div className="glass p-8 rounded-2xl bg-white/5 border-white/10 shadow-xl">
+                <form className="space-y-4">
+                    <div>
+                        <label className="block text-sm text-slate-300 mb-1">الاسم الكامل</label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                            <input
+                                type="text"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-accent outline-none focus:ring-1 focus:ring-accent transition-all"
+                                placeholder=""
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm text-slate-300 mb-1">البريد الإلكتروني</label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                            <input
+                                type="email"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-accent outline-none focus:ring-1 focus:ring-accent transition-all"
+                                placeholder=""
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm text-slate-300 mb-1">رقم الهاتف</label>
+                        <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                            <input
+                                type="tel"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-accent outline-none focus:ring-1 focus:ring-accent transition-all"
+                                placeholder=""
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm text-slate-300 mb-1">تاريخ الميلاد</label>
+                            <div className="relative">
+                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                                <input
+                                    type="date"
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-accent outline-none focus:ring-1 focus:ring-accent transition-all [color-scheme:dark]"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm text-slate-300 mb-1">الجنس</label>
+                            <select className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-accent outline-none focus:ring-1 focus:ring-accent transition-all [&>option]:text-black">
+                                <option value="">اختر...</option>
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm text-slate-300 mb-1">كلمة المرور</label>
+                        <AnimatedPasswordInput />
+                    </div>
+
+                    <div className="pt-2">
+                        <button className="w-full bg-primary hover:bg-primary-light text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group">
+                            إنشاء الحساب
+                            <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform rotate-180" />
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div className="text-center mt-6">
+                <Link to="/auth/register" className="text-slate-400 hover:text-white flex items-center gap-2 justify-center transition-colors">
+                    <ArrowLeft className="w-4 h-4 rotate-180" />
+                    <span>العودة للاختيار</span>
+                </Link>
+            </div>
+        </motion.div>
+    );
+}
