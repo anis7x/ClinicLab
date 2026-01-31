@@ -109,7 +109,7 @@ const Navbar = () => {
                             دخول المرضى
                         </Link>
                         <Link
-                            to="/auth/register"
+                            to="/auth/register/professional"
                             className="bg-primary text-white hover:bg-primary/90 px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95"
                         >
                             انضم إلينا كشريك
@@ -158,7 +158,7 @@ const Navbar = () => {
                                     دخول المرضى
                                 </Link>
                                 <Link
-                                    to="/auth/register"
+                                    to="/auth/register/professional"
                                     onClick={() => setIsOpen(false)}
                                     className="bg-primary text-white text-center py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                                 >

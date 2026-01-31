@@ -92,9 +92,9 @@ export default function RegisterPatient() {
             </div>
 
             <div className="text-center mt-6">
-                <Link to="/auth/register" className="text-slate-500 hover:text-primary flex items-center gap-2 justify-center transition-colors">
+                <Link to="/auth/login" className="text-slate-500 hover:text-primary flex items-center gap-2 justify-center transition-colors">
                     <ArrowLeft className="w-4 h-4 rotate-180" />
-                    <span>العودة للاختيار</span>
+                    <span>العودة لتسجيل الدخول</span>
                 </Link>
             </div>
         </motion.div>

@@ -8,7 +8,6 @@ import AuthLayout from './components/layout/AuthLayout';
 // Pages
 import LandingPage from './pages/public/LandingPage';
 import Login from './pages/auth/Login';
-import RegisterSelection from './pages/auth/RegisterSelection';
 import RegisterProfessional from './pages/auth/RegisterProfessional';
 
 import RegisterPatient from './pages/auth/RegisterPatient';
@@ -27,7 +26,7 @@ function App() {
         {/* Auth Routes */}
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
-          <Route path="register" element={<RegisterSelection />} />
+          <Route path="register" element={<Navigate to="/auth/register/professional" replace />} />
           <Route path="register/professional" element={<RegisterProfessional />} />
           <Route path="register/patient" element={<RegisterPatient />} />
 

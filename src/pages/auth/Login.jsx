@@ -51,8 +51,8 @@ export default function Login() {
 
             <div className="mt-6 text-center text-sm text-slate-500">
                 ليس لديك حساب؟{' '}
-                <Link to="/auth/register" className="text-primary hover:text-primary-dark font-medium">
-                    إنشاء حساب
+                <Link to="/auth/register/patient" className="text-primary hover:text-primary-dark font-medium">
+                    إنشاء حساب مريض
                 </Link>
             </div>
         </motion.div >

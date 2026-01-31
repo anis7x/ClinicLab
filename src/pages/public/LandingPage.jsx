@@ -10,9 +10,8 @@ const pricingPlans = [
         name: "الباقة الفضية",
         price: "5,000 د.ج",
         period: "/شهرياً",
-        description: "باقة الظهور للعيادات الناشئة",
+        description: "باقة الظهور للعيادات و المختبرات الناشئة",
         features: [
-            "قائمة وتشكيل جانبي على الإنترنت",
             "استقبال الحجوزات والمواعيد",
             "تحليلات أساسية",
             "دعم عبر البريد الإلكتروني"
@@ -24,7 +23,7 @@ const pricingPlans = [
         name: "الباقة الذهبية",
         price: "10,000 د.ج",
         period: "/شهرياً",
-        description: "نظام إدارة شامل للمختبرات المحترفة",
+        description: "نظام إدارة شامل للمختبرات و العيادات المحترفة",
         features: [
             "كل شيء في الباقة الفضية",
             "نظام إدارة عيادة كامل",
@@ -221,31 +220,31 @@ export default function LandingPage() {
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 viewport={{ once: true }}
                                 className={`relative p-8 rounded-3xl border transition-all duration-300 ${plan.highlight
-                                    ? 'bg-gradient-to-b from-slate-900 to-slate-800 border-accent/30 shadow-2xl shadow-accent/10'
+                                    ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 border-yellow-400/50 shadow-2xl shadow-amber-500/30 ring-1 ring-white/50'
                                     : 'bg-white border-slate-200 shadow-xl hover:shadow-2xl'
                                     }`}
                             >
                                 {plan.highlight && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-slate-900 text-sm font-bold px-6 py-2 rounded-full shadow-lg shadow-accent/30">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-amber-600 text-sm font-bold px-6 py-2 rounded-full shadow-lg shadow-black/5 ring-4 ring-white/20">
                                         الأكثر شيوعاً
                                     </div>
                                 )}
 
                                 <div className="mb-8">
-                                    <h3 className={`text-2xl font-bold mb-2 ${plan.highlight ? 'text-white' : 'text-slate-900'}`}>
+                                    <h3 className={`text-2xl font-bold mb-2 text-slate-900`}>
                                         {plan.name}
                                     </h3>
-                                    <p className={`text-sm ${plan.highlight ? 'text-slate-300' : 'text-slate-500'}`}>
+                                    <p className={`text-sm ${plan.highlight ? 'text-slate-800' : 'text-slate-500'}`}>
                                         {plan.description}
                                     </p>
                                 </div>
 
                                 <div className="mb-8 pb-8 border-b border-slate-100">
                                     <div className="flex items-baseline gap-1">
-                                        <span className={`text-5xl font-bold tracking-tight ${plan.highlight ? 'text-white' : 'text-slate-900'}`}>
+                                        <span className={`text-5xl font-bold tracking-tight text-slate-900`}>
                                             {plan.price}
                                         </span>
-                                        <span className={`text-lg font-medium ${plan.highlight ? 'text-slate-400' : 'text-slate-500'}`}>
+                                        <span className={`text-lg font-medium ${plan.highlight ? 'text-slate-800' : 'text-slate-500'}`}>
                                             {plan.period}
                                         </span>
                                     </div>
@@ -254,10 +253,10 @@ export default function LandingPage() {
                                 <ul className="space-y-4 mb-10">
                                     {plan.features.map((feature, i) => (
                                         <li key={i} className="flex items-start gap-3">
-                                            <div className={`mt-1 p-1 rounded-full flex-shrink-0 ${plan.highlight ? 'bg-accent/20 text-accent' : 'bg-primary/10 text-primary'}`}>
+                                            <div className={`mt-1 p-1 rounded-full flex-shrink-0 ${plan.highlight ? 'bg-white/20 text-slate-900' : 'bg-primary/10 text-primary'}`}>
                                                 <Check className="w-4 h-4" />
                                             </div>
-                                            <span className={`text-base ${plan.highlight ? 'text-slate-300' : 'text-slate-600'}`}>
+                                            <span className={`text-base ${plan.highlight ? 'text-slate-900 font-medium' : 'text-slate-600'}`}>
                                                 {feature}
                                             </span>
                                         </li>
@@ -265,9 +264,9 @@ export default function LandingPage() {
                                 </ul>
 
                                 <Link
-                                    to="/auth/register"
+                                    to="/auth/register/professional"
                                     className={`block w-full text-center py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] ${plan.highlight
-                                        ? 'bg-accent hover:bg-accent-hover text-slate-900 shadow-lg shadow-accent/20'
+                                        ? 'bg-white hover:bg-slate-50 text-amber-600 shadow-lg shadow-black/10'
                                         : 'bg-slate-100 hover:bg-slate-200 text-slate-900'
                                         }`}
                                 >
