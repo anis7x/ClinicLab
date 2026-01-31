@@ -8,11 +8,11 @@ export default function Login() {
     // const [showPassword, setShowPassword] = React.useState(false);
 
     return (
-        initial = {{ opacity: 0, scale: 0.95 }
-}
-animate = {{ opacity: 1, scale: 1 }}
-className = "glass p-8 rounded-2xl bg-white border border-slate-200 shadow-xl"
-    >
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass p-8 rounded-2xl bg-white border border-slate-200 shadow-xl"
+        >
             <h2 className="text-2xl font-bold mb-6 text-center text-slate-900">مرحباً بعودتك</h2>
 
             <form className="space-y-4">
