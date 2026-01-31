@@ -12,14 +12,14 @@ export default function AnimatedPasswordInput({ placeholder = "" }) {
                 placeholder={placeholder}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pr-4 pl-12 text-white placeholder-slate-500 focus:outline-none focus:border-accent transition-colors text-right"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg py-3 pr-4 pl-12 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary transition-colors text-right focus:bg-white"
                 dir="rtl"
             />
 
             <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1"
                 title={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
             >
                 {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
