@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, MapPin, Check, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import wilayas from '../../data/wilayas.json';
+import medicalServices from '../../data/medical_services.json';
 
 const pricingPlans = [
     {
@@ -45,7 +46,7 @@ export default function LandingPage() {
     return (
         <div className="bg-slate-50 dark:bg-slate-900 min-h-screen relative overflow-x-hidden">
             {/* Subtle Grid Pattern Overlay */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-soft-light z-0"></div>
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] opacity-20 pointer-events-none mix-blend-soft-light z-0"></div>
 
             {/* Hero Section */}
             <section className="relative min-h-[90vh] flex items-center justify-center pt-20">
@@ -96,10 +97,10 @@ export default function LandingPage() {
                         {/* Search Bar - Floating Glass */}
                         <motion.div
                             whileHover={{ scale: 1.01 }}
-                            className="glass p-3 rounded-full max-w-4xl mx-auto flex flex-col md:flex-row gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 shadow-2xl shadow-primary/5 ring-1 ring-white/20 relative z-50"
+                            className="glass p-3 md:p-3 rounded-[2.5rem] md:rounded-full max-w-4xl mx-auto flex flex-col md:flex-row gap-6 md:gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 shadow-2xl shadow-primary/5 ring-1 ring-white/20 relative z-50"
                         >
                             <div className="flex-1 flex items-center px-6 bg-white/50 dark:bg-slate-900/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 dark:hover:bg-slate-800/70 group relative z-50">
-                                <Search className="text-slate-400 group-focus-within:text-primary w-6 h-6 ml-4 transition-colors" />
+                                <Search className="text-slate-400 group-focus-within:text-primary w-5 h-5 md:w-6 md:h-6 ml-4 transition-colors" />
                                 <div className="relative w-full">
                                     <input
                                         type="text"
@@ -110,17 +111,17 @@ export default function LandingPage() {
                                         }}
                                         onFocus={() => setShowServiceSuggestions(true)}
                                         onBlur={() => setTimeout(() => setShowServiceSuggestions(false), 200)}
-                                        placeholder="الخدمة (مثال: تحليل دم، رنين مغناطيسي)"
-                                        className="w-full bg-transparent outline-none text-lg text-slate-700 dark:text-white placeholder-slate-400"
+                                        placeholder="الخدمة (مثال: تحليل دم)"
+                                        className="w-full bg-transparent outline-none text-base md:text-lg text-slate-700 dark:text-white placeholder-slate-400"
                                     />
                                     {/* Service Suggestions Dropdown */}
                                     {showServiceSuggestions && serviceSearch && (
                                         <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden max-h-[140px] overflow-y-auto z-[100] scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
-                                            {medicalServices
-                                                .filter(s => s.name.includes(serviceSearch))
+                                            {(Array.isArray(medicalServices) ? medicalServices : [])
+                                                .filter(s => s?.name && s.name.toLowerCase().includes(serviceSearch.toLowerCase()))
                                                 .map((service) => (
                                                     <button
-                                                        key={service.id}
+                                                        key={service.id || Math.random()}
                                                         onClick={() => {
                                                             setServiceSearch(service.name);
                                                             setShowServiceSuggestions(false);
@@ -131,7 +132,7 @@ export default function LandingPage() {
                                                         <span className="text-xs text-primary bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded-md font-mono">{service.category}</span>
                                                     </button>
                                                 ))}
-                                            {medicalServices.filter(s => s.name.includes(serviceSearch)).length === 0 && (
+                                            {(Array.isArray(medicalServices) ? medicalServices : []).filter(s => s?.name && s.name.toLowerCase().includes(serviceSearch.toLowerCase())).length === 0 && (
                                                 <div className="p-4 text-center text-slate-500 dark:text-slate-400 text-sm py-6">
                                                     لا توجد نتائج مطابقة
                                                 </div>
@@ -142,7 +143,7 @@ export default function LandingPage() {
                             </div>
                             <div className="hidden md:block w-px bg-slate-200 dark:bg-slate-700 h-10 self-center mx-2"></div>
                             <div className="flex-1 flex items-center px-6 bg-white/50 dark:bg-slate-900/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 dark:hover:bg-slate-800/70 group">
-                                <MapPin className="text-slate-400 group-focus-within:text-accent w-6 h-6 ml-4 transition-colors" />
+                                <MapPin className="text-slate-400 group-focus-within:text-accent w-5 h-5 md:w-6 md:h-6 ml-4 transition-colors" />
                                 <div className="relative w-full">
                                     <input
                                         type="text"
@@ -154,7 +155,7 @@ export default function LandingPage() {
                                         onFocus={() => setShowWilayaSuggestions(true)}
                                         onBlur={() => setTimeout(() => setShowWilayaSuggestions(false), 200)}
                                         placeholder="الموقع (الولاية)"
-                                        className="w-full bg-transparent outline-none text-lg text-slate-700 dark:text-white placeholder-slate-400"
+                                        className="w-full bg-transparent outline-none text-base md:text-lg text-slate-700 dark:text-white placeholder-slate-400"
                                     />
                                     {/* Wilaya Suggestions Dropdown */}
                                     {showWilayaSuggestions && wilayaSearch && (
@@ -190,7 +191,7 @@ export default function LandingPage() {
                                     )}
                                 </div>
                             </div>
-                            <button className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-primary/50 transform active:scale-95">
+                            <button className="w-full md:w-auto bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-10 py-2.5 md:py-4 rounded-full font-bold text-base md:text-lg transition-all shadow-lg hover:shadow-primary/50 transform active:scale-95">
                                 بحث
                             </button>
                         </motion.div>
