@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Check, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import wilayas from '../../data/wilayas.json';
 
 const pricingPlans = [
     {
@@ -36,13 +37,18 @@ const pricingPlans = [
 ];
 
 export default function LandingPage() {
+    const [wilayaSearch, setWilayaSearch] = useState('');
+    const [showWilayaSuggestions, setShowWilayaSuggestions] = useState(false);
+    const [serviceSearch, setServiceSearch] = useState('');
+    const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+
     return (
         <div className="bg-slate-50 dark:bg-slate-900 min-h-screen relative overflow-x-hidden">
             {/* Subtle Grid Pattern Overlay */}
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-soft-light z-0"></div>
 
             {/* Hero Section */}
-            <section className="relative min-h-[90vh] flex items-center justify-center pt-20 overflow-hidden">
+            <section className="relative min-h-[90vh] flex items-center justify-center pt-20">
                 {/* Animated Background Blobs */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                     <motion.div
@@ -90,24 +96,99 @@ export default function LandingPage() {
                         {/* Search Bar - Floating Glass */}
                         <motion.div
                             whileHover={{ scale: 1.01 }}
-                            className="glass p-3 rounded-full max-w-4xl mx-auto flex flex-col md:flex-row gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 shadow-2xl shadow-primary/5 ring-1 ring-white/20"
+                            className="glass p-3 rounded-full max-w-4xl mx-auto flex flex-col md:flex-row gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 shadow-2xl shadow-primary/5 ring-1 ring-white/20 relative z-50"
                         >
-                            <div className="flex-1 flex items-center px-6 bg-white/50 dark:bg-slate-900/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 dark:hover:bg-slate-800/70 group">
+                            <div className="flex-1 flex items-center px-6 bg-white/50 dark:bg-slate-900/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 dark:hover:bg-slate-800/70 group relative z-50">
                                 <Search className="text-slate-400 group-focus-within:text-primary w-6 h-6 ml-4 transition-colors" />
-                                <input
-                                    type="text"
-                                    placeholder="الخدمة (مثال: تحليل دم، رنين مغناطيسي)"
-                                    className="w-full bg-transparent outline-none text-lg text-slate-700 dark:text-white placeholder-slate-400"
-                                />
+                                <div className="relative w-full">
+                                    <input
+                                        type="text"
+                                        value={serviceSearch}
+                                        onChange={(e) => {
+                                            setServiceSearch(e.target.value);
+                                            setShowServiceSuggestions(true);
+                                        }}
+                                        onFocus={() => setShowServiceSuggestions(true)}
+                                        onBlur={() => setTimeout(() => setShowServiceSuggestions(false), 200)}
+                                        placeholder="الخدمة (مثال: تحليل دم، رنين مغناطيسي)"
+                                        className="w-full bg-transparent outline-none text-lg text-slate-700 dark:text-white placeholder-slate-400"
+                                    />
+                                    {/* Service Suggestions Dropdown */}
+                                    {showServiceSuggestions && serviceSearch && (
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden max-h-[140px] overflow-y-auto z-[100] scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
+                                            {medicalServices
+                                                .filter(s => s.name.includes(serviceSearch))
+                                                .map((service) => (
+                                                    <button
+                                                        key={service.id}
+                                                        onClick={() => {
+                                                            setServiceSearch(service.name);
+                                                            setShowServiceSuggestions(false);
+                                                        }}
+                                                        className="w-full text-right px-6 py-4 md:py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center justify-between group border-b border-slate-50 dark:border-slate-700/50 last:border-none"
+                                                    >
+                                                        <span className="text-slate-800 dark:text-slate-200 font-medium text-base">{service.name}</span>
+                                                        <span className="text-xs text-primary bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded-md font-mono">{service.category}</span>
+                                                    </button>
+                                                ))}
+                                            {medicalServices.filter(s => s.name.includes(serviceSearch)).length === 0 && (
+                                                <div className="p-4 text-center text-slate-500 dark:text-slate-400 text-sm py-6">
+                                                    لا توجد نتائج مطابقة
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="hidden md:block w-px bg-slate-200 dark:bg-slate-700 h-10 self-center mx-2"></div>
                             <div className="flex-1 flex items-center px-6 bg-white/50 dark:bg-slate-900/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 dark:hover:bg-slate-800/70 group">
                                 <MapPin className="text-slate-400 group-focus-within:text-accent w-6 h-6 ml-4 transition-colors" />
-                                <input
-                                    type="text"
-                                    placeholder="الموقع (ولاية، مدينة)"
-                                    className="w-full bg-transparent outline-none text-lg text-slate-700 dark:text-white placeholder-slate-400"
-                                />
+                                <div className="relative w-full">
+                                    <input
+                                        type="text"
+                                        value={wilayaSearch}
+                                        onChange={(e) => {
+                                            setWilayaSearch(e.target.value);
+                                            setShowWilayaSuggestions(true);
+                                        }}
+                                        onFocus={() => setShowWilayaSuggestions(true)}
+                                        onBlur={() => setTimeout(() => setShowWilayaSuggestions(false), 200)}
+                                        placeholder="الموقع (الولاية)"
+                                        className="w-full bg-transparent outline-none text-lg text-slate-700 dark:text-white placeholder-slate-400"
+                                    />
+                                    {/* Wilaya Suggestions Dropdown */}
+                                    {showWilayaSuggestions && wilayaSearch && (
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden max-h-[140px] overflow-y-auto z-[100] scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
+                                            {wilayas
+                                                .filter(w =>
+                                                    w.ar_name.includes(wilayaSearch) ||
+                                                    w.name.toLowerCase().includes(wilayaSearch.toLowerCase()) ||
+                                                    w.id.includes(wilayaSearch)
+                                                )
+                                                .map((wilaya) => (
+                                                    <button
+                                                        key={wilaya.id}
+                                                        onClick={() => {
+                                                            setWilayaSearch(wilaya.ar_name);
+                                                            setShowWilayaSuggestions(false);
+                                                        }}
+                                                        className="w-full text-right px-6 py-4 md:py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center justify-between group border-b border-slate-50 dark:border-slate-700/50 last:border-none"
+                                                    >
+                                                        <span className="text-slate-800 dark:text-slate-200 font-medium text-base">{wilaya.ar_name}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-xs text-slate-400 font-normal hidden sm:inline-block">{wilaya.name}</span>
+                                                            <span className="text-xs text-primary bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded-md font-mono">{wilaya.id}</span>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            {wilayas.filter(w => w.ar_name.includes(wilayaSearch) || w.name.toLowerCase().includes(wilayaSearch.toLowerCase()) || w.id.includes(wilayaSearch)).length === 0 && (
+                                                <div className="p-4 text-center text-slate-500 dark:text-slate-400 text-sm py-6">
+                                                    لا توجد نتائج مطابقة
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <button className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-primary/50 transform active:scale-95">
                                 بحث

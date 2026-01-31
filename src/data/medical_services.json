@@ -1,0 +1,197 @@
+[
+    {
+        "id": "lab_001",
+        "name": "تحليل دم شامل (FNS/CBC)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_002",
+        "name": "تحليل السكر (Glycémie)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_003",
+        "name": "تحليل السكر التراكمي (HbA1c)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_004",
+        "name": "تحليل الكوليسترول (Cholestérol)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_005",
+        "name": "تحليل وظائف الكلى (Créatinine, Urée)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_006",
+        "name": "تحليل وظائف الكبد (TGO, TGP)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_007",
+        "name": "تحليل الغدة الدرقية (TSH, T3, T4)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_008",
+        "name": "تحليل فيتامين د (Vitamine D)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_009",
+        "name": "تحليل فقر الدم (Ferritine, Fer)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_010",
+        "name": "تحليل البول (ECBU)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_011",
+        "name": "اختبار الحمل (B-HCG)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_012",
+        "name": "تحليل فصيلة الدم (Groupage Sanguin)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_013",
+        "name": "تحليل سي آر بي (CRP)",
+        "category": "مختبر"
+    },
+    {
+        "id": "lab_014",
+        "name": "تحليل تخثر الدم (TP/INR)",
+        "category": "مختبر"
+    },
+    {
+        "id": "img_001",
+        "name": "أشعة سينية (Radio X-Ray)",
+        "category": "تصوير طبي"
+    },
+    {
+        "id": "img_002",
+        "name": "إيكوغراف (Echographie)",
+        "category": "تصوير طبي"
+    },
+    {
+        "id": "img_003",
+        "name": "رنين مغناطيسي (IRM)",
+        "category": "تصوير طبي"
+    },
+    {
+        "id": "img_004",
+        "name": "سكانير (Scanner / TDM)",
+        "category": "تصوير طبي"
+    },
+    {
+        "id": "img_005",
+        "name": "ماموغرافيا (Mammographie)",
+        "category": "تصوير طبي"
+    },
+    {
+        "id": "cli_001",
+        "name": "استشارة طب عام",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_002",
+        "name": "استشارة طب أطفال",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_003",
+        "name": "استشارة طب نساء وتوليد",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_004",
+        "name": "استشارة قلب وشرايين",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_005",
+        "name": "استشارة جلدية",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_006",
+        "name": "استشارة طب عيون",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_007",
+        "name": "استشارة أنف وأذن وحنجرة (ORL)",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_008",
+        "name": "استشارة عظام ومفاصل",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_009",
+        "name": "استشارة جهاز هضمي",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_010",
+        "name": "استشارة غدد وسكري",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_011",
+        "name": "استشارة أعصاب",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_012",
+        "name": "استشارة طب نفسي",
+        "category": "عيادة"
+    },
+    {
+        "id": "cli_013",
+        "name": "تنظيف أسنان (Détartrage)",
+        "category": "عيادة أسنان"
+    },
+    {
+        "id": "cli_014",
+        "name": "حشو أسنان",
+        "category": "عيادة أسنان"
+    },
+    {
+        "id": "cli_015",
+        "name": "تقويم أسنان (ODF)",
+        "category": "عيادة أسنان"
+    },
+    {
+        "id": "cli_016",
+        "name": "تبييض أسنان",
+        "category": "عيادة أسنان"
+    },
+    {
+        "id": "cli_017",
+        "name": "قلع أسنان",
+        "category": "عيادة أسنان"
+    },
+    {
+        "id": "nur_001",
+        "name": "تغيير ضمادات",
+        "category": "تمريض"
+    },
+    {
+        "id": "nur_002",
+        "name": "رعاية منزلية",
+        "category": "تمريض"
+    },
+    {
+        "id": "nur_003",
+        "name": "حقن (Injections)",
+        "category": "تمريض"
+    }
+]
