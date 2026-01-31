@@ -99,7 +99,7 @@ export default function LandingPage() {
                             whileHover={{ scale: 1.01 }}
                             className="glass p-3 md:p-3 rounded-[2.5rem] md:rounded-full max-w-4xl mx-auto flex flex-col md:flex-row gap-6 md:gap-2 bg-white/60 backdrop-blur-xl border border-white/40 shadow-2xl shadow-primary/5 ring-1 ring-white/20 relative z-50"
                         >
-                            <div className="flex-1 flex items-center px-6 bg-white/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 group relative z-50">
+                            <div className="flex-1 flex items-center px-6 bg-white/50 rounded-full h-20 md:h-16 shadow-inner transition-colors hover:bg-white/70 group relative z-50">
                                 <Search className="text-slate-400 group-focus-within:text-primary w-5 h-5 md:w-6 md:h-6 ml-4 transition-colors" />
                                 <div className="relative w-full">
                                     <input
@@ -142,7 +142,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
                             <div className="hidden md:block w-px bg-slate-200 h-10 self-center mx-2"></div>
-                            <div className="flex-1 flex items-center px-6 bg-white/50 rounded-full h-16 shadow-inner transition-colors hover:bg-white/70 group">
+                            <div className="flex-1 flex items-center px-6 bg-white/50 rounded-full h-20 md:h-16 shadow-inner transition-colors hover:bg-white/70 group">
                                 <MapPin className="text-slate-400 group-focus-within:text-accent w-5 h-5 md:w-6 md:h-6 ml-4 transition-colors" />
                                 <div className="relative w-full">
                                     <input
