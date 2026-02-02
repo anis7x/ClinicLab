@@ -1,0 +1,528 @@
+[
+    {
+        "id": "prov_001",
+        "name": "مختبر الشفاء الطبي",
+        "nameEn": "Al-Chifa Medical Lab",
+        "type": "lab",
+        "wilaya": "خنشلة",
+        "wilayaId": "40",
+        "city": "خنشلة المركز",
+        "address": "شارع العربي بن مهيدي، خنشلة",
+        "phone": "032 72 XX XX",
+        "rating": 4.7,
+        "reviewsCount": 128,
+        "image": "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400",
+        "openHours": "08:00 - 18:00",
+        "services": [
+            {
+                "serviceId": "lab_001",
+                "name": "تحليل دم شامل (FNS/CBC)",
+                "price": 1200,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Sysmex XN-1000",
+                    "type": "محلل دموي آلي",
+                    "origin": "اليابان"
+                }
+            },
+            {
+                "serviceId": "lab_002",
+                "name": "تحليل السكر (Glycémie)",
+                "price": 500,
+                "turnaround": "2 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Cobas c311",
+                    "type": "محلل كيميائي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_007",
+                "name": "تحليل الغدة الدرقية (TSH, T3, T4)",
+                "price": 3500,
+                "turnaround": "48 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Elecsys 2010",
+                    "type": "محلل مناعي",
+                    "origin": "سويسرا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_002",
+        "name": "عيادة النور للطب العام",
+        "nameEn": "Al-Nour General Clinic",
+        "type": "clinic",
+        "wilaya": "خنشلة",
+        "wilayaId": "40",
+        "city": "خنشلة المركز",
+        "address": "حي 500 مسكن، خنشلة",
+        "phone": "032 73 XX XX",
+        "rating": 4.5,
+        "reviewsCount": 89,
+        "image": "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=400",
+        "openHours": "08:00 - 20:00",
+        "services": [
+            {
+                "serviceId": "cli_001",
+                "name": "استشارة طب عام",
+                "price": 1500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. كريم بوعزيز",
+                    "specialty": "طب عام",
+                    "experience": "12 سنة"
+                },
+                "equipment": null
+            },
+            {
+                "serviceId": "cli_002",
+                "name": "استشارة طب أطفال",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. فاطمة حمادي",
+                    "specialty": "طب أطفال",
+                    "experience": "8 سنة"
+                },
+                "equipment": null
+            }
+        ]
+    },
+    {
+        "id": "prov_003",
+        "name": "مركز الصحة للتصوير الطبي",
+        "nameEn": "Health Center Medical Imaging",
+        "type": "lab",
+        "wilaya": "خنشلة",
+        "wilayaId": "40",
+        "city": "قايس",
+        "address": "الطريق الوطني رقم 10، قايس",
+        "phone": "032 74 XX XX",
+        "rating": 4.3,
+        "reviewsCount": 56,
+        "image": "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400",
+        "openHours": "07:00 - 17:00",
+        "services": [
+            {
+                "serviceId": "img_001",
+                "name": "أشعة سينية (Radio X-Ray)",
+                "price": 2000,
+                "turnaround": "30 دقيقة",
+                "doctor": {
+                    "name": "د. محمد العربي",
+                    "specialty": "أخصائي أشعة",
+                    "experience": "10 سنة"
+                },
+                "equipment": {
+                    "name": "Siemens Ysio Max",
+                    "type": "جهاز أشعة رقمي",
+                    "origin": "ألمانيا"
+                }
+            },
+            {
+                "serviceId": "img_002",
+                "name": "إيكوغراف (Echographie)",
+                "price": 3000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. محمد العربي",
+                    "specialty": "أخصائي أشعة",
+                    "experience": "10 سنة"
+                },
+                "equipment": {
+                    "name": "GE Voluson E10",
+                    "type": "جهاز إيكوغراف 4D",
+                    "origin": "أمريكا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_004",
+        "name": "مختبر ابن سينا للتحاليل",
+        "nameEn": "Ibn Sina Medical Lab",
+        "type": "lab",
+        "wilaya": "الجزائر",
+        "wilayaId": "16",
+        "city": "باب الوادي",
+        "address": "شارع علي بومنجل، باب الوادي",
+        "phone": "021 95 XX XX",
+        "rating": 4.9,
+        "reviewsCount": 342,
+        "image": "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400",
+        "openHours": "07:00 - 20:00",
+        "services": [
+            {
+                "serviceId": "lab_001",
+                "name": "تحليل دم شامل (FNS/CBC)",
+                "price": 1500,
+                "turnaround": "12 ساعة",
+                "doctor": {
+                    "name": "د. سمية بن عمر",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "20 سنة"
+                },
+                "equipment": {
+                    "name": "Beckman Coulter DxH 900",
+                    "type": "محلل دموي متقدم",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "lab_002",
+                "name": "تحليل السكر (Glycémie)",
+                "price": 600,
+                "turnaround": "1 ساعة",
+                "doctor": {
+                    "name": "د. سمية بن عمر",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "20 سنة"
+                },
+                "equipment": {
+                    "name": "Abbott Architect c8000",
+                    "type": "محلل كيميائي",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "lab_007",
+                "name": "تحليل الغدة الدرقية (TSH, T3, T4)",
+                "price": 4000,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. سمية بن عمر",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "20 سنة"
+                },
+                "equipment": {
+                    "name": "Abbott Architect i2000SR",
+                    "type": "محلل مناعي",
+                    "origin": "أمريكا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_005",
+        "name": "عيادة الأمل التخصصية",
+        "nameEn": "Al-Amal Specialty Clinic",
+        "type": "clinic",
+        "wilaya": "الجزائر",
+        "wilayaId": "16",
+        "city": "حسين داي",
+        "address": "شارع تريبوليتان، حسين داي",
+        "phone": "021 77 XX XX",
+        "rating": 4.8,
+        "reviewsCount": 215,
+        "image": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400",
+        "openHours": "08:00 - 22:00",
+        "services": [
+            {
+                "serviceId": "cli_004",
+                "name": "استشارة قلب وشرايين",
+                "price": 4000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "بروفيسور عبد الرحمن شريف",
+                    "specialty": "قلب وشرايين",
+                    "experience": "25 سنة"
+                },
+                "equipment": {
+                    "name": "GE Vivid E95",
+                    "type": "جهاز إيكو القلب",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_001",
+                "name": "استشارة طب عام",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. ياسين بوقرة",
+                    "specialty": "طب عام",
+                    "experience": "10 سنة"
+                },
+                "equipment": null
+            }
+        ]
+    },
+    {
+        "id": "prov_006",
+        "name": "مختبر وهران الطبي الحديث",
+        "nameEn": "Oran Modern Medical Lab",
+        "type": "lab",
+        "wilaya": "وهران",
+        "wilayaId": "31",
+        "city": "وهران المركز",
+        "address": "شارع العربي بومنجل، وهران",
+        "phone": "041 55 XX XX",
+        "rating": 4.6,
+        "reviewsCount": 189,
+        "image": "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=400",
+        "openHours": "07:30 - 19:00",
+        "services": [
+            {
+                "serviceId": "lab_001",
+                "name": "تحليل دم شامل (FNS/CBC)",
+                "price": 1300,
+                "turnaround": "18 ساعة",
+                "doctor": {
+                    "name": "د. نادية بلحاج",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "18 سنة"
+                },
+                "equipment": {
+                    "name": "Mindray BC-6800",
+                    "type": "محلل دموي",
+                    "origin": "الصين"
+                }
+            },
+            {
+                "serviceId": "lab_002",
+                "name": "تحليل السكر (Glycémie)",
+                "price": 450,
+                "turnaround": "2 ساعة",
+                "doctor": {
+                    "name": "د. نادية بلحاج",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "18 سنة"
+                },
+                "equipment": {
+                    "name": "Mindray BS-800",
+                    "type": "محلل كيميائي",
+                    "origin": "الصين"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_007",
+        "name": "عيادة قسنطينة للعيون",
+        "nameEn": "Constantine Eye Clinic",
+        "type": "clinic",
+        "wilaya": "قسنطينة",
+        "wilayaId": "25",
+        "city": "قسنطينة المركز",
+        "address": "شارع بلوزداد، قسنطينة",
+        "phone": "031 88 XX XX",
+        "rating": 4.7,
+        "reviewsCount": 167,
+        "image": "https://images.unsplash.com/photo-1551076805-e1869033e561?w=400",
+        "openHours": "08:00 - 18:00",
+        "services": [
+            {
+                "serviceId": "cli_006",
+                "name": "استشارة طب عيون",
+                "price": 2500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "بروفيسور مراد بوزيدي",
+                    "specialty": "طب عيون",
+                    "experience": "22 سنة"
+                },
+                "equipment": {
+                    "name": "Zeiss Cirrus 6000",
+                    "type": "OCT عيني",
+                    "origin": "ألمانيا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_008",
+        "name": "مركز سطيف للتصوير الطبي",
+        "nameEn": "Sétif Medical Imaging Center",
+        "type": "lab",
+        "wilaya": "سطيف",
+        "wilayaId": "19",
+        "city": "سطيف المركز",
+        "address": "شارع 8 ماي 1945، سطيف",
+        "phone": "036 84 XX XX",
+        "rating": 4.4,
+        "reviewsCount": 98,
+        "image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400",
+        "openHours": "07:00 - 18:00",
+        "services": [
+            {
+                "serviceId": "img_003",
+                "name": "رنين مغناطيسي (IRM)",
+                "price": 25000,
+                "turnaround": "موعد",
+                "doctor": {
+                    "name": "د. خالد مسعودي",
+                    "specialty": "أخصائي أشعة",
+                    "experience": "14 سنة"
+                },
+                "equipment": {
+                    "name": "Siemens MAGNETOM Vida 3T",
+                    "type": "جهاز رنين مغناطيسي",
+                    "origin": "ألمانيا"
+                }
+            },
+            {
+                "serviceId": "img_004",
+                "name": "سكانير (Scanner / TDM)",
+                "price": 15000,
+                "turnaround": "موعد",
+                "doctor": {
+                    "name": "د. خالد مسعودي",
+                    "specialty": "أخصائي أشعة",
+                    "experience": "14 سنة"
+                },
+                "equipment": {
+                    "name": "GE Revolution CT",
+                    "type": "سكانير 256 شريحة",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "img_002",
+                "name": "إيكوغراف (Echographie)",
+                "price": 3500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. آمال بن يحيى",
+                    "specialty": "أخصائية أشعة",
+                    "experience": "9 سنة"
+                },
+                "equipment": {
+                    "name": "Philips EPIQ Elite",
+                    "type": "جهاز إيكوغراف متقدم",
+                    "origin": "هولندا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_009",
+        "name": "عيادة عنابة لطب الأسنان",
+        "nameEn": "Annaba Dental Clinic",
+        "type": "clinic",
+        "wilaya": "عنابة",
+        "wilayaId": "23",
+        "city": "عنابة المركز",
+        "address": "شارع زيغود يوسف، عنابة",
+        "phone": "038 86 XX XX",
+        "rating": 4.6,
+        "reviewsCount": 134,
+        "image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400",
+        "openHours": "09:00 - 19:00",
+        "services": [
+            {
+                "serviceId": "cli_013",
+                "name": "تنظيف أسنان (Détartrage)",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. سارة بوشاقور",
+                    "specialty": "طب أسنان",
+                    "experience": "7 سنة"
+                },
+                "equipment": {
+                    "name": "EMS Airflow Prophylaxis Master",
+                    "type": "جهاز تنظيف بالهواء",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "cli_015",
+                "name": "تقويم أسنان (ODF)",
+                "price": 80000,
+                "turnaround": "علاج طويل",
+                "doctor": {
+                    "name": "د. يوسف حداد",
+                    "specialty": "تقويم أسنان",
+                    "experience": "12 سنة"
+                },
+                "equipment": {
+                    "name": "Invisalign System",
+                    "type": "تقويم شفاف",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_016",
+                "name": "تبييض أسنان",
+                "price": 15000,
+                "turnaround": "جلسة واحدة",
+                "doctor": {
+                    "name": "د. سارة بوشاقور",
+                    "specialty": "طب أسنان",
+                    "experience": "7 سنة"
+                },
+                "equipment": {
+                    "name": "Philips Zoom WhiteSpeed",
+                    "type": "جهاز تبييض بالضوء",
+                    "origin": "هولندا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_010",
+        "name": "مختبر باتنة للتحاليل الطبية",
+        "nameEn": "Batna Medical Lab",
+        "type": "lab",
+        "wilaya": "باتنة",
+        "wilayaId": "05",
+        "city": "باتنة المركز",
+        "address": "شارع الاستقلال، باتنة",
+        "phone": "033 81 XX XX",
+        "rating": 4.5,
+        "reviewsCount": 112,
+        "image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=400",
+        "openHours": "07:00 - 17:00",
+        "services": [
+            {
+                "serviceId": "lab_001",
+                "name": "تحليل دم شامل (FNS/CBC)",
+                "price": 1100,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. عمر بوخالفة",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "11 سنة"
+                },
+                "equipment": {
+                    "name": "Horiba ABX Pentra XL 80",
+                    "type": "محلل دموي",
+                    "origin": "فرنسا"
+                }
+            },
+            {
+                "serviceId": "lab_002",
+                "name": "تحليل السكر (Glycémie)",
+                "price": 400,
+                "turnaround": "3 ساعات",
+                "doctor": {
+                    "name": "د. عمر بوخالفة",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "11 سنة"
+                },
+                "equipment": {
+                    "name": "Beckman Coulter AU480",
+                    "type": "محلل كيميائي",
+                    "origin": "أمريكا"
+                }
+            }
+        ]
+    }
+]

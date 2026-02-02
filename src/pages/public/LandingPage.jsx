@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Check, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import wilayas from '../../data/wilayas.json';
 import medicalServices from '../../data/medical_services.json';
 
@@ -37,10 +37,18 @@ const pricingPlans = [
 ];
 
 export default function LandingPage() {
+    const navigate = useNavigate();
     const [wilayaSearch, setWilayaSearch] = useState('');
     const [showWilayaSuggestions, setShowWilayaSuggestions] = useState(false);
     const [serviceSearch, setServiceSearch] = useState('');
     const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (serviceSearch) params.set('service', serviceSearch);
+        if (wilayaSearch) params.set('wilaya', wilayaSearch);
+        navigate(`/search?${params.toString()}`);
+    };
 
     return (
         <div className="bg-slate-50 min-h-screen relative overflow-x-hidden">
@@ -190,7 +198,10 @@ export default function LandingPage() {
                                     )}
                                 </div>
                             </div>
-                            <button className="w-full md:w-auto bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-10 py-2.5 md:py-4 rounded-full font-bold text-base md:text-lg transition-all shadow-lg hover:shadow-primary/50 transform active:scale-95">
+                            <button
+                                onClick={handleSearch}
+                                className="w-full md:w-auto bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-10 py-2.5 md:py-4 rounded-full font-bold text-base md:text-lg transition-all shadow-lg hover:shadow-primary/50 transform active:scale-95"
+                            >
                                 بحث
                             </button>
                         </motion.div>
