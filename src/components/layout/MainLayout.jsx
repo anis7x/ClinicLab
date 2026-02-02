@@ -57,6 +57,8 @@ const SocialLink = ({ href, icon: Icon, label, hoverClass, tooltipClass, arrowCl
     </a>
 );
 
+import logo from '../../assets/logo.png';
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
@@ -73,7 +75,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2 group">
-                        <img src="/logo.png" alt="ClinicaLab Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
+                        <img src={logo} alt="ClinicaLab Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
                         <span className="text-2xl font-bold text-slate-900 tracking-wide">
                             ClinicLab
                         </span>
