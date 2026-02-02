@@ -7,7 +7,6 @@ import AuthLayout from './components/layout/AuthLayout';
 
 // Pages
 import LandingPage from './pages/public/LandingPage';
-import SearchResults from './pages/public/SearchResults';
 import Login from './pages/auth/Login';
 import RegisterProfessional from './pages/auth/RegisterProfessional';
 
@@ -20,7 +19,6 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<LandingPage />} />
-          <Route path="search" element={<SearchResults />} />
           <Route path="services" element={<div className="p-20 text-center">Services Page (Coming Soon)</div>} />
           <Route path="contact" element={<div className="p-20 text-center">Contact Page (Coming Soon)</div>} />
         </Route>

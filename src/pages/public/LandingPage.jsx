@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, MapPin, Check, ArrowRight } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, MapPin, Check, ArrowRight, Star, Clock, Phone, User, Cpu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import wilayas from '../../data/wilayas.json';
 import medicalServices from '../../data/medical_services.json';
+import mockProviders from '../../data/mock_providers.json';
 
 const pricingPlans = [
     {
@@ -42,12 +43,58 @@ export default function LandingPage() {
     const [showWilayaSuggestions, setShowWilayaSuggestions] = useState(false);
     const [serviceSearch, setServiceSearch] = useState('');
     const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+    const [searchResults, setSearchResults] = useState(null);
+    const [sortBy, setSortBy] = useState('rating');
 
     const handleSearch = () => {
-        const params = new URLSearchParams();
-        if (serviceSearch) params.set('service', serviceSearch);
-        if (wilayaSearch) params.set('wilaya', wilayaSearch);
-        navigate(`/search?${params.toString()}`);
+        let results = [];
+
+        mockProviders.forEach(provider => {
+            const matchesWilaya = !wilayaSearch ||
+                provider.wilaya.includes(wilayaSearch) ||
+                provider.wilayaId === wilayaSearch;
+
+            if (!matchesWilaya) return;
+
+            const matchingServices = provider.services.filter(service =>
+                !serviceSearch || service.name.includes(serviceSearch)
+            );
+
+            if (matchingServices.length > 0) {
+                results.push({
+                    ...provider,
+                    matchedServices: matchingServices
+                });
+            }
+        });
+
+        // Sort results
+        if (sortBy === 'rating') {
+            results.sort((a, b) => b.rating - a.rating);
+        } else if (sortBy === 'price') {
+            results.sort((a, b) => {
+                const aMin = Math.min(...a.matchedServices.map(s => s.price));
+                const bMin = Math.min(...b.matchedServices.map(s => s.price));
+                return aMin - bMin;
+            });
+        }
+
+        setSearchResults(results);
+
+        // Scroll to results
+        setTimeout(() => {
+            document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    };
+
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('ar-DZ').format(price) + ' د.ج';
+    };
+
+    const clearSearch = () => {
+        setSearchResults(null);
+        setServiceSearch('');
+        setWilayaSearch('');
     };
 
     return (
@@ -208,6 +255,159 @@ export default function LandingPage() {
                     </motion.div>
                 </div>
             </section>
+
+            {/* Search Results Section */}
+            {searchResults !== null && (
+                <section id="search-results" className="py-16 relative z-10 bg-gradient-to-b from-slate-100 to-slate-50">
+                    <div className="container px-4 md:px-8 mx-auto">
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+                                    نتائج البحث
+                                </h2>
+                                <p className="text-slate-600">
+                                    <span className="font-bold text-primary">{searchResults.length}</span> نتيجة
+                                    {serviceSearch && <span> لـ "{serviceSearch}"</span>}
+                                    {wilayaSearch && <span> في {wilayaSearch}</span>}
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 px-3 py-2">
+                                    <span className="text-sm text-slate-500">ترتيب:</span>
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => {
+                                            setSortBy(e.target.value);
+                                            handleSearch();
+                                        }}
+                                        className="bg-transparent outline-none text-slate-700 font-medium text-sm"
+                                    >
+                                        <option value="rating">الأعلى تقييماً</option>
+                                        <option value="price">الأقل سعراً</option>
+                                    </select>
+                                </div>
+                                <button
+                                    onClick={clearSearch}
+                                    className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                    مسح
+                                </button>
+                            </div>
+                        </div>
+
+                        {searchResults.length === 0 ? (
+                            <div className="text-center py-16 bg-white rounded-2xl border border-slate-100">
+                                <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <Search className="w-12 h-12 text-slate-300" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-900 mb-2">لا توجد نتائج</h3>
+                                <p className="text-slate-500 mb-6">جرب تغيير معايير البحث أو توسيع نطاقه</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                <AnimatePresence>
+                                    {searchResults.map((provider, index) => (
+                                        <motion.div
+                                            key={provider.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            className="bg-white rounded-2xl border border-slate-100 shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                                        >
+                                            <div className="flex flex-col lg:flex-row">
+                                                <div className="lg:w-64 h-48 lg:h-auto relative">
+                                                    <img
+                                                        src={provider.image}
+                                                        alt={provider.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                                        <span className="font-bold text-slate-900 text-sm">{provider.rating}</span>
+                                                        <span className="text-slate-400 text-xs">({provider.reviewsCount})</span>
+                                                    </div>
+                                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold ${provider.type === 'lab'
+                                                            ? 'bg-cyan-100 text-cyan-700'
+                                                            : 'bg-emerald-100 text-emerald-700'
+                                                        }`}>
+                                                        {provider.type === 'lab' ? 'مختبر' : 'عيادة'}
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex-1 p-6">
+                                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+                                                        <div>
+                                                            <h3 className="text-xl font-bold text-slate-900 mb-1">{provider.name}</h3>
+                                                            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+                                                                <span className="flex items-center gap-1">
+                                                                    <MapPin className="w-4 h-4" />
+                                                                    {provider.city}، {provider.wilaya}
+                                                                </span>
+                                                                <span className="flex items-center gap-1">
+                                                                    <Clock className="w-4 h-4" />
+                                                                    {provider.openHours}
+                                                                </span>
+                                                                <span className="flex items-center gap-1">
+                                                                    <Phone className="w-4 h-4" />
+                                                                    {provider.phone}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-3">
+                                                        {provider.matchedServices.map((service, sIdx) => (
+                                                            <div
+                                                                key={sIdx}
+                                                                className="bg-slate-50 rounded-xl p-4 border border-slate-100"
+                                                            >
+                                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                                                    <div className="flex-1">
+                                                                        <h4 className="font-bold text-slate-900 mb-2">{service.name}</h4>
+                                                                        <div className="flex flex-wrap gap-4 text-sm">
+                                                                            {service.doctor && (
+                                                                                <div className="flex items-center gap-2 text-slate-600">
+                                                                                    <User className="w-4 h-4 text-primary" />
+                                                                                    <span>{service.doctor.name}</span>
+                                                                                    <span className="text-slate-400">({service.doctor.specialty})</span>
+                                                                                </div>
+                                                                            )}
+                                                                            {service.equipment && (
+                                                                                <div className="flex items-center gap-2 text-slate-600">
+                                                                                    <Cpu className="w-4 h-4 text-cyan-500" />
+                                                                                    <span>{service.equipment.name}</span>
+                                                                                    <span className="text-slate-400">({service.equipment.origin})</span>
+                                                                                </div>
+                                                                            )}
+                                                                            <div className="flex items-center gap-2 text-slate-600">
+                                                                                <Clock className="w-4 h-4 text-amber-500" />
+                                                                                <span>{service.turnaround}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-4">
+                                                                        <div className="text-left">
+                                                                            <p className="text-2xl font-bold text-primary">{formatPrice(service.price)}</p>
+                                                                        </div>
+                                                                        <button className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold transition-all text-sm whitespace-nowrap">
+                                                                            احجز الآن
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
 
             {/* Pricing Section */}
             <section className="py-24 relative z-10">
