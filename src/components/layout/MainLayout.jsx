@@ -75,7 +75,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-20">
 
                     <Link to="/" className="flex items-center gap-3 group">
-                        <img src={logo} alt="ClinicaLab Logo" className="h-10 sm:h-12 w-auto object-contain" />
+                        <img src={logo} alt="ClinicaLab Logo" className="h-12 sm:h-14 w-auto object-contain" />
                         <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-wide">
                             ClinicLab
                         </span>
