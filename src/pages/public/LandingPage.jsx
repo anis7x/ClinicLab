@@ -305,7 +305,7 @@ export default function LandingPage() {
                                 <p className="text-slate-500 mb-6">جرب تغيير معايير البحث أو توسيع نطاقه</p>
                             </div>
                         ) : (
-                            <div className="grid gap-6">
+                            <div className="grid gap-8">
                                 <AnimatePresence>
                                     {searchResults.map((provider, index) => (
                                         <motion.div
@@ -313,54 +313,60 @@ export default function LandingPage() {
                                             initial={{ opacity: 0, y: 30 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: index * 0.08, type: "spring", stiffness: 100 }}
-                                            className="group bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/50 shadow-xl shadow-slate-200/50 overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-1"
+                                            className="group bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1"
                                         >
                                             <div className="flex flex-col lg:flex-row">
                                                 {/* Enhanced Image Section */}
-                                                <div className="lg:w-72 h-56 lg:h-auto relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent z-10" />
+                                                <div className="lg:w-80 h-64 lg:h-auto relative overflow-hidden m-3 rounded-[1.5rem] shadow-inner">
+                                                    <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-slate-900/80 to-transparent z-10" />
                                                     <img
                                                         src={provider.image}
                                                         alt={provider.name}
                                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                     />
                                                     {/* Rating Badge */}
-                                                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg z-20">
-                                                        <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                                                        <span className="font-bold text-slate-900">{provider.rating}</span>
-                                                        <span className="text-slate-400 text-sm">({provider.reviewsCount})</span>
+                                                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-lg z-20 border border-white/50">
+                                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                                        <span className="font-bold text-slate-900 text-sm">{provider.rating}</span>
                                                     </div>
                                                     {/* Type Badge */}
-                                                    <div className={`absolute top-4 left-4 px-4 py-2 rounded-2xl text-sm font-bold shadow-lg z-20 ${provider.type === 'lab'
-                                                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                                                            : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
+                                                    <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg z-20 border border-white/20 backdrop-blur-md ${provider.type === 'lab'
+                                                            ? 'bg-cyan-500/90 text-white'
+                                                            : 'bg-emerald-500/90 text-white'
                                                         }`}>
                                                         {provider.type === 'lab' ? '🔬 مختبر' : '🏥 عيادة'}
                                                     </div>
                                                     {/* Provider Name on Image (Mobile) */}
                                                     <div className="absolute bottom-4 right-4 left-4 z-20 lg:hidden">
-                                                        <h3 className="text-xl font-bold text-white drop-shadow-lg">{provider.name}</h3>
+                                                        <h3 className="text-xl font-bold text-white drop-shadow-md">{provider.name}</h3>
+                                                        <p className="text-white/90 text-sm flex items-center gap-1 mt-1">
+                                                            <MapPin className="w-3 h-3" />
+                                                            {provider.city}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 {/* Content Section */}
                                                 <div className="flex-1 p-6 lg:p-8">
                                                     {/* Header */}
-                                                    <div className="mb-6">
-                                                        <h3 className="hidden lg:block text-2xl font-bold text-slate-900 mb-3">{provider.name}</h3>
-                                                        <div className="flex flex-wrap items-center gap-4 text-sm">
-                                                            <span className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
-                                                                <MapPin className="w-4 h-4 text-primary" />
-                                                                {provider.city}، {provider.wilaya}
-                                                            </span>
-                                                            <span className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
-                                                                <Clock className="w-4 h-4 text-emerald-500" />
-                                                                {provider.openHours}
-                                                            </span>
-                                                            <span className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
-                                                                <Phone className="w-4 h-4 text-blue-500" />
-                                                                <span dir="ltr">{provider.phone}</span>
-                                                            </span>
+                                                    <div className="hidden lg:block mb-6">
+                                                        <div className="flex justify-between items-start">
+                                                            <div>
+                                                                <h3 className="text-2xl font-bold text-slate-900 mb-2">{provider.name}</h3>
+                                                                <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-100">
+                                                                        <MapPin className="w-3.5 h-3.5 text-primary" />
+                                                                        {provider.city}، {provider.wilaya}
+                                                                    </span>
+                                                                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-100">
+                                                                        <Clock className="w-3.5 h-3.5 text-emerald-500" />
+                                                                        {provider.openHours}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center gap-1 text-xs font-medium text-slate-400 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                                                                <span>{provider.reviewsCount} تقييم</span>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -369,47 +375,66 @@ export default function LandingPage() {
                                                         {provider.matchedServices.map((service, sIdx) => (
                                                             <div
                                                                 key={sIdx}
-                                                                className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-5 border border-slate-200/50 hover:border-primary/30 transition-colors"
+                                                                className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100 hover:border-primary/20 transition-colors"
                                                             >
-                                                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                                                                    <div className="flex-1 space-y-3">
-                                                                        <h4 className="text-lg font-bold text-slate-900">{service.name}</h4>
-                                                                        <div className="flex flex-wrap gap-3">
+                                                                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                                                                    <div className="flex-1 space-y-4">
+                                                                        <h4 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                                                            <span className="w-2 h-2 rounded-full bg-primary"></span>
+                                                                            {service.name}
+                                                                        </h4>
+
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                                             {service.doctor && (
-                                                                                <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-xl shadow-sm">
-                                                                                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                                                                                        <User className="w-4 h-4 text-primary" />
+                                                                                <div className="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                                                                    <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                                                                                        <User className="w-4 h-4 text-blue-600" />
                                                                                     </div>
                                                                                     <div>
-                                                                                        <span className="font-medium text-slate-800">{service.doctor.name}</span>
-                                                                                        <span className="text-slate-400 text-xs block">{service.doctor.specialty}</span>
+                                                                                        <span className="text-xs font-bold text-slate-400 block mb-0.5">الطبيب المشرف</span>
+                                                                                        <span className="text-sm font-bold text-slate-800 block">{service.doctor.name}</span>
+                                                                                        <span className="text-xs text-slate-500">{service.doctor.specialty}</span>
                                                                                     </div>
                                                                                 </div>
                                                                             )}
+
                                                                             {service.equipment && (
-                                                                                <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-xl shadow-sm">
-                                                                                    <div className="w-8 h-8 bg-cyan-50 rounded-full flex items-center justify-center">
-                                                                                        <Cpu className="w-4 h-4 text-cyan-600" />
+                                                                                <div className="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                                                                    <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center shrink-0">
+                                                                                        <Cpu className="w-4 h-4 text-purple-600" />
                                                                                     </div>
                                                                                     <div>
-                                                                                        <span className="font-medium text-slate-800">{service.equipment.name}</span>
-                                                                                        <span className="text-slate-400 text-xs block">{service.equipment.origin}</span>
+                                                                                        <span className="text-xs font-bold text-slate-400 block mb-0.5">التجهيزات</span>
+                                                                                        <span className="text-sm font-bold text-slate-800 block">{service.equipment.name}</span>
+                                                                                        <span className="text-xs text-slate-500">{service.equipment.origin}</span>
                                                                                     </div>
                                                                                 </div>
                                                                             )}
-                                                                            <div className="flex items-center gap-2 text-sm bg-amber-50 px-3 py-2 rounded-xl">
-                                                                                <Clock className="w-4 h-4 text-amber-600" />
-                                                                                <span className="text-amber-700 font-medium">{service.turnaround}</span>
+
+                                                                            <div className="flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                                                                <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center shrink-0">
+                                                                                    <Clock className="w-4 h-4 text-amber-600" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <span className="text-xs font-bold text-slate-400 block mb-0.5">مدة الانتظار</span>
+                                                                                    <span className="text-sm font-bold text-slate-800">{service.turnaround}</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="flex items-center gap-4 lg:flex-col lg:items-end">
-                                                                        <div className="bg-gradient-to-r from-primary to-primary-light bg-clip-text">
-                                                                            <p className="text-3xl font-black text-transparent">{formatPrice(service.price)}</p>
+
+                                                                    <div className="flex items-center justify-between lg:flex-col lg:items-end lg:justify-center gap-4 pl-2 border-t lg:border-t-0 lg:border-r border-slate-200 pt-4 lg:pt-0 lg:pr-6 mt-2 lg:mt-0">
+                                                                        <div className="text-right">
+                                                                            <span className="text-xs text-slate-400 font-medium block mb-1">سعر الخدمة</span>
+                                                                            <p className="text-2xl font-black text-primary">{formatPrice(service.price)}</p>
                                                                         </div>
-                                                                        <button className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-8 py-3 rounded-2xl font-bold transition-all text-sm whitespace-nowrap shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-95">
-                                                                            احجز الآن
-                                                                        </button>
+                                                                        <Link
+                                                                            to="/auth/register/patient"
+                                                                            className="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 text-sm flex items-center gap-2"
+                                                                        >
+                                                                            احجز موعد
+                                                                            <ArrowRight className="w-4 h-4 rotate-180" />
+                                                                        </Link>
                                                                     </div>
                                                                 </div>
                                                             </div>
