@@ -305,92 +305,109 @@ export default function LandingPage() {
                                 <p className="text-slate-500 mb-6">جرب تغيير معايير البحث أو توسيع نطاقه</p>
                             </div>
                         ) : (
-                            <div className="space-y-6">
+                            <div className="grid gap-6">
                                 <AnimatePresence>
                                     {searchResults.map((provider, index) => (
                                         <motion.div
                                             key={provider.id}
-                                            initial={{ opacity: 0, y: 20 }}
+                                            initial={{ opacity: 0, y: 30 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="bg-white rounded-2xl border border-slate-100 shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                                            transition={{ delay: index * 0.08, type: "spring", stiffness: 100 }}
+                                            className="group bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/50 shadow-xl shadow-slate-200/50 overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-1"
                                         >
                                             <div className="flex flex-col lg:flex-row">
-                                                <div className="lg:w-64 h-48 lg:h-auto relative">
+                                                {/* Enhanced Image Section */}
+                                                <div className="lg:w-72 h-56 lg:h-auto relative overflow-hidden">
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent z-10" />
                                                     <img
                                                         src={provider.image}
                                                         alt={provider.name}
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                     />
-                                                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                                                        <span className="font-bold text-slate-900 text-sm">{provider.rating}</span>
-                                                        <span className="text-slate-400 text-xs">({provider.reviewsCount})</span>
+                                                    {/* Rating Badge */}
+                                                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg z-20">
+                                                        <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+                                                        <span className="font-bold text-slate-900">{provider.rating}</span>
+                                                        <span className="text-slate-400 text-sm">({provider.reviewsCount})</span>
                                                     </div>
-                                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold ${provider.type === 'lab'
-                                                            ? 'bg-cyan-100 text-cyan-700'
-                                                            : 'bg-emerald-100 text-emerald-700'
+                                                    {/* Type Badge */}
+                                                    <div className={`absolute top-4 left-4 px-4 py-2 rounded-2xl text-sm font-bold shadow-lg z-20 ${provider.type === 'lab'
+                                                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                                                            : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
                                                         }`}>
-                                                        {provider.type === 'lab' ? 'مختبر' : 'عيادة'}
+                                                        {provider.type === 'lab' ? '🔬 مختبر' : '🏥 عيادة'}
+                                                    </div>
+                                                    {/* Provider Name on Image (Mobile) */}
+                                                    <div className="absolute bottom-4 right-4 left-4 z-20 lg:hidden">
+                                                        <h3 className="text-xl font-bold text-white drop-shadow-lg">{provider.name}</h3>
                                                     </div>
                                                 </div>
 
-                                                <div className="flex-1 p-6">
-                                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                                                        <div>
-                                                            <h3 className="text-xl font-bold text-slate-900 mb-1">{provider.name}</h3>
-                                                            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
-                                                                <span className="flex items-center gap-1">
-                                                                    <MapPin className="w-4 h-4" />
-                                                                    {provider.city}، {provider.wilaya}
-                                                                </span>
-                                                                <span className="flex items-center gap-1">
-                                                                    <Clock className="w-4 h-4" />
-                                                                    {provider.openHours}
-                                                                </span>
-                                                                <span className="flex items-center gap-1">
-                                                                    <Phone className="w-4 h-4" />
-                                                                    {provider.phone}
-                                                                </span>
-                                                            </div>
+                                                {/* Content Section */}
+                                                <div className="flex-1 p-6 lg:p-8">
+                                                    {/* Header */}
+                                                    <div className="mb-6">
+                                                        <h3 className="hidden lg:block text-2xl font-bold text-slate-900 mb-3">{provider.name}</h3>
+                                                        <div className="flex flex-wrap items-center gap-4 text-sm">
+                                                            <span className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
+                                                                <MapPin className="w-4 h-4 text-primary" />
+                                                                {provider.city}، {provider.wilaya}
+                                                            </span>
+                                                            <span className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
+                                                                <Clock className="w-4 h-4 text-emerald-500" />
+                                                                {provider.openHours}
+                                                            </span>
+                                                            <span className="flex items-center gap-2 text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
+                                                                <Phone className="w-4 h-4 text-blue-500" />
+                                                                <span dir="ltr">{provider.phone}</span>
+                                                            </span>
                                                         </div>
                                                     </div>
 
-                                                    <div className="space-y-3">
+                                                    {/* Services */}
+                                                    <div className="space-y-4">
                                                         {provider.matchedServices.map((service, sIdx) => (
                                                             <div
                                                                 key={sIdx}
-                                                                className="bg-slate-50 rounded-xl p-4 border border-slate-100"
+                                                                className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-5 border border-slate-200/50 hover:border-primary/30 transition-colors"
                                                             >
-                                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                                                                    <div className="flex-1">
-                                                                        <h4 className="font-bold text-slate-900 mb-2">{service.name}</h4>
-                                                                        <div className="flex flex-wrap gap-4 text-sm">
+                                                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                                                                    <div className="flex-1 space-y-3">
+                                                                        <h4 className="text-lg font-bold text-slate-900">{service.name}</h4>
+                                                                        <div className="flex flex-wrap gap-3">
                                                                             {service.doctor && (
-                                                                                <div className="flex items-center gap-2 text-slate-600">
-                                                                                    <User className="w-4 h-4 text-primary" />
-                                                                                    <span>{service.doctor.name}</span>
-                                                                                    <span className="text-slate-400">({service.doctor.specialty})</span>
+                                                                                <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-xl shadow-sm">
+                                                                                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                                                                                        <User className="w-4 h-4 text-primary" />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <span className="font-medium text-slate-800">{service.doctor.name}</span>
+                                                                                        <span className="text-slate-400 text-xs block">{service.doctor.specialty}</span>
+                                                                                    </div>
                                                                                 </div>
                                                                             )}
                                                                             {service.equipment && (
-                                                                                <div className="flex items-center gap-2 text-slate-600">
-                                                                                    <Cpu className="w-4 h-4 text-cyan-500" />
-                                                                                    <span>{service.equipment.name}</span>
-                                                                                    <span className="text-slate-400">({service.equipment.origin})</span>
+                                                                                <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-xl shadow-sm">
+                                                                                    <div className="w-8 h-8 bg-cyan-50 rounded-full flex items-center justify-center">
+                                                                                        <Cpu className="w-4 h-4 text-cyan-600" />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <span className="font-medium text-slate-800">{service.equipment.name}</span>
+                                                                                        <span className="text-slate-400 text-xs block">{service.equipment.origin}</span>
+                                                                                    </div>
                                                                                 </div>
                                                                             )}
-                                                                            <div className="flex items-center gap-2 text-slate-600">
-                                                                                <Clock className="w-4 h-4 text-amber-500" />
-                                                                                <span>{service.turnaround}</span>
+                                                                            <div className="flex items-center gap-2 text-sm bg-amber-50 px-3 py-2 rounded-xl">
+                                                                                <Clock className="w-4 h-4 text-amber-600" />
+                                                                                <span className="text-amber-700 font-medium">{service.turnaround}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="flex items-center gap-4">
-                                                                        <div className="text-left">
-                                                                            <p className="text-2xl font-bold text-primary">{formatPrice(service.price)}</p>
+                                                                    <div className="flex items-center gap-4 lg:flex-col lg:items-end">
+                                                                        <div className="bg-gradient-to-r from-primary to-primary-light bg-clip-text">
+                                                                            <p className="text-3xl font-black text-transparent">{formatPrice(service.price)}</p>
                                                                         </div>
-                                                                        <button className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold transition-all text-sm whitespace-nowrap">
+                                                                        <button className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-white px-8 py-3 rounded-2xl font-bold transition-all text-sm whitespace-nowrap shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-95">
                                                                             احجز الآن
                                                                         </button>
                                                                     </div>
