@@ -73,11 +73,10 @@ const Navbar = () => {
         <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    {/* Logo */}
+
                     <Link to="/" className="flex items-center gap-3 group">
-                        <img src={logo} alt="ClinicaLab Logo" className="h-12 w-auto object-contain" />
-                        <span className="text-2xl font-bold text-slate-900 tracking-wide hidden sm:block">
+                        <img src={logo} alt="ClinicaLab Logo" className="h-10 sm:h-12 w-auto object-contain" />
+                        <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-wide">
                             ClinicLab
                         </span>
                     </Link>
