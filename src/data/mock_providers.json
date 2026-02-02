@@ -47,6 +47,70 @@
                 }
             },
             {
+                "serviceId": "lab_003",
+                "name": "تحليل السكر التراكمي (HbA1c)",
+                "price": 2500,
+                "turnaround": "48 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Bio-Rad D-10",
+                    "type": "محلل HbA1c",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "lab_004",
+                "name": "تحليل الكوليسترول (Cholestérol)",
+                "price": 800,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Cobas c311",
+                    "type": "محلل كيميائي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_005",
+                "name": "تحليل وظائف الكلى (Créatinine, Urée)",
+                "price": 1200,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Cobas c311",
+                    "type": "محلل كيميائي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_006",
+                "name": "تحليل وظائف الكبد (TGO, TGP)",
+                "price": 1200,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Cobas c311",
+                    "type": "محلل كيميائي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
                 "serviceId": "lab_007",
                 "name": "تحليل الغدة الدرقية (TSH, T3, T4)",
                 "price": 3500,
@@ -60,6 +124,118 @@
                     "name": "Roche Elecsys 2010",
                     "type": "محلل مناعي",
                     "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_008",
+                "name": "تحليل فيتامين د (Vitamine D)",
+                "price": 4000,
+                "turnaround": "72 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Elecsys 2010",
+                    "type": "محلل مناعي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_009",
+                "name": "تحليل فقر الدم (Ferritine, Fer)",
+                "price": 2000,
+                "turnaround": "48 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Elecsys 2010",
+                    "type": "محلل مناعي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_010",
+                "name": "تحليل البول (ECBU)",
+                "price": 1500,
+                "turnaround": "48 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Sysmex UF-5000",
+                    "type": "محلل بول آلي",
+                    "origin": "اليابان"
+                }
+            },
+            {
+                "serviceId": "lab_011",
+                "name": "اختبار الحمل (B-HCG)",
+                "price": 1800,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Elecsys 2010",
+                    "type": "محلل مناعي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_012",
+                "name": "تحليل فصيلة الدم (Groupage Sanguin)",
+                "price": 600,
+                "turnaround": "1 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "DiaMed ID System",
+                    "type": "جهاز فصائل الدم",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_013",
+                "name": "تحليل سي آر بي (CRP)",
+                "price": 1000,
+                "turnaround": "12 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Roche Cobas c311",
+                    "type": "محلل كيميائي",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "lab_014",
+                "name": "تحليل تخثر الدم (TP/INR)",
+                "price": 1500,
+                "turnaround": "24 ساعة",
+                "doctor": {
+                    "name": "د. أحمد بن سعيد",
+                    "specialty": "بيولوجي طبي",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Sysmex CS-2500",
+                    "type": "محلل تخثر",
+                    "origin": "اليابان"
                 }
             }
         ]
@@ -100,6 +276,62 @@
                     "name": "د. فاطمة حمادي",
                     "specialty": "طب أطفال",
                     "experience": "8 سنة"
+                },
+                "equipment": null
+            },
+            {
+                "serviceId": "cli_003",
+                "name": "استشارة طب نساء وتوليد",
+                "price": 2500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. سميرة بن عودة",
+                    "specialty": "طب نساء وتوليد",
+                    "experience": "14 سنة"
+                },
+                "equipment": {
+                    "name": "GE Voluson E8",
+                    "type": "جهاز إيكو نسائي",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_005",
+                "name": "استشارة جلدية",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. نبيل شريف",
+                    "specialty": "طب جلدي",
+                    "experience": "10 سنة"
+                },
+                "equipment": {
+                    "name": "Dermlite DL4",
+                    "type": "منظار جلدي",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_009",
+                "name": "استشارة جهاز هضمي",
+                "price": 2500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. عبد الكريم حداد",
+                    "specialty": "جهاز هضمي",
+                    "experience": "16 سنة"
+                },
+                "equipment": null
+            },
+            {
+                "serviceId": "cli_010",
+                "name": "استشارة غدد وسكري",
+                "price": 3000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. ليلى مرزوقي",
+                    "specialty": "غدد وسكري",
+                    "experience": "11 سنة"
                 },
                 "equipment": null
             }
@@ -151,6 +383,309 @@
                     "type": "جهاز إيكوغراف 4D",
                     "origin": "أمريكا"
                 }
+            },
+            {
+                "serviceId": "img_003",
+                "name": "رنين مغناطيسي (IRM)",
+                "price": 22000,
+                "turnaround": "موعد مسبق",
+                "doctor": {
+                    "name": "د. محمد العربي",
+                    "specialty": "أخصائي أشعة",
+                    "experience": "10 سنة"
+                },
+                "equipment": {
+                    "name": "Siemens MAGNETOM Aera 1.5T",
+                    "type": "جهاز رنين مغناطيسي",
+                    "origin": "ألمانيا"
+                }
+            },
+            {
+                "serviceId": "img_004",
+                "name": "سكانير (Scanner / TDM)",
+                "price": 12000,
+                "turnaround": "موعد مسبق",
+                "doctor": {
+                    "name": "د. محمد العربي",
+                    "specialty": "أخصائي أشعة",
+                    "experience": "10 سنة"
+                },
+                "equipment": {
+                    "name": "GE Revolution EVO",
+                    "type": "سكانير 128 شريحة",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "img_005",
+                "name": "ماموغرافيا (Mammographie)",
+                "price": 5000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. آمنة بوزيد",
+                    "specialty": "أخصائية أشعة",
+                    "experience": "8 سنة"
+                },
+                "equipment": {
+                    "name": "Hologic Selenia Dimensions",
+                    "type": "ماموغراف رقمي",
+                    "origin": "أمريكا"
+                }
+            }
+        ]
+    },
+    {
+        "id": "prov_011",
+        "name": "المركز الطبي التخصصي خنشلة",
+        "nameEn": "Khenchela Specialty Medical Center",
+        "type": "clinic",
+        "wilaya": "خنشلة",
+        "wilayaId": "40",
+        "city": "خنشلة المركز",
+        "address": "شارع أول نوفمبر، خنشلة",
+        "phone": "032 75 XX XX",
+        "rating": 4.8,
+        "reviewsCount": 156,
+        "image": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400",
+        "openHours": "08:00 - 22:00",
+        "services": [
+            {
+                "serviceId": "cli_004",
+                "name": "استشارة قلب وشرايين",
+                "price": 3500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "بروفيسور عبد القادر بلعيد",
+                    "specialty": "قلب وشرايين",
+                    "experience": "22 سنة"
+                },
+                "equipment": {
+                    "name": "Philips Affiniti 70",
+                    "type": "جهاز إيكو القلب",
+                    "origin": "هولندا"
+                }
+            },
+            {
+                "serviceId": "cli_006",
+                "name": "استشارة طب عيون",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. رضا مسعودي",
+                    "specialty": "طب عيون",
+                    "experience": "15 سنة"
+                },
+                "equipment": {
+                    "name": "Topcon 3D OCT-2000",
+                    "type": "OCT عيني",
+                    "origin": "اليابان"
+                }
+            },
+            {
+                "serviceId": "cli_007",
+                "name": "استشارة أنف وأذن وحنجرة (ORL)",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. سليم بن ناصر",
+                    "specialty": "أنف وأذن وحنجرة",
+                    "experience": "13 سنة"
+                },
+                "equipment": {
+                    "name": "Karl Storz Endoscope",
+                    "type": "منظار ORL",
+                    "origin": "ألمانيا"
+                }
+            },
+            {
+                "serviceId": "cli_008",
+                "name": "استشارة عظام ومفاصل",
+                "price": 2500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. ياسين بوقرة",
+                    "specialty": "عظام ومفاصل",
+                    "experience": "18 سنة"
+                },
+                "equipment": null
+            },
+            {
+                "serviceId": "cli_011",
+                "name": "استشارة أعصاب",
+                "price": 3000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. سمير حمدي",
+                    "specialty": "طب أعصاب",
+                    "experience": "17 سنة"
+                },
+                "equipment": {
+                    "name": "Natus Neurology EMG",
+                    "type": "جهاز تخطيط عصبي",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_012",
+                "name": "استشارة طب نفسي",
+                "price": 3500,
+                "turnaround": "موعد مسبق",
+                "doctor": {
+                    "name": "د. نوال شريفي",
+                    "specialty": "طب نفسي",
+                    "experience": "12 سنة"
+                },
+                "equipment": null
+            }
+        ]
+    },
+    {
+        "id": "prov_012",
+        "name": "عيادة الابتسامة لطب الأسنان",
+        "nameEn": "Smile Dental Clinic",
+        "type": "clinic",
+        "wilaya": "خنشلة",
+        "wilayaId": "40",
+        "city": "خنشلة المركز",
+        "address": "حي النصر، خنشلة",
+        "phone": "032 76 XX XX",
+        "rating": 4.6,
+        "reviewsCount": 98,
+        "image": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400",
+        "openHours": "09:00 - 19:00",
+        "services": [
+            {
+                "serviceId": "cli_013",
+                "name": "تنظيف أسنان (Détartrage)",
+                "price": 1500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. هشام بوعكاز",
+                    "specialty": "طب أسنان",
+                    "experience": "9 سنة"
+                },
+                "equipment": {
+                    "name": "EMS Airflow Prophylaxis",
+                    "type": "جهاز تنظيف بالهواء",
+                    "origin": "سويسرا"
+                }
+            },
+            {
+                "serviceId": "cli_014",
+                "name": "حشو أسنان",
+                "price": 3000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. هشام بوعكاز",
+                    "specialty": "طب أسنان",
+                    "experience": "9 سنة"
+                },
+                "equipment": {
+                    "name": "A-dec 500",
+                    "type": "كرسي أسنان متكامل",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_015",
+                "name": "تقويم أسنان (ODF)",
+                "price": 70000,
+                "turnaround": "علاج طويل",
+                "doctor": {
+                    "name": "د. مريم بلقاسم",
+                    "specialty": "تقويم أسنان",
+                    "experience": "10 سنة"
+                },
+                "equipment": {
+                    "name": "3M Clarity Brackets",
+                    "type": "تقويم شفاف",
+                    "origin": "أمريكا"
+                }
+            },
+            {
+                "serviceId": "cli_016",
+                "name": "تبييض أسنان",
+                "price": 12000,
+                "turnaround": "جلسة واحدة",
+                "doctor": {
+                    "name": "د. هشام بوعكاز",
+                    "specialty": "طب أسنان",
+                    "experience": "9 سنة"
+                },
+                "equipment": {
+                    "name": "Philips Zoom WhiteSpeed",
+                    "type": "جهاز تبييض بالضوء",
+                    "origin": "هولندا"
+                }
+            },
+            {
+                "serviceId": "cli_017",
+                "name": "قلع أسنان",
+                "price": 2000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "د. هشام بوعكاز",
+                    "specialty": "طب أسنان",
+                    "experience": "9 سنة"
+                },
+                "equipment": null
+            }
+        ]
+    },
+    {
+        "id": "prov_013",
+        "name": "مركز الرعاية التمريضية المنزلية",
+        "nameEn": "Home Nursing Care Center",
+        "type": "clinic",
+        "wilaya": "خنشلة",
+        "wilayaId": "40",
+        "city": "خنشلة المركز",
+        "address": "حي الأمل، خنشلة",
+        "phone": "032 77 XX XX",
+        "rating": 4.4,
+        "reviewsCount": 67,
+        "image": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400",
+        "openHours": "24/7",
+        "services": [
+            {
+                "serviceId": "nur_001",
+                "name": "تغيير ضمادات",
+                "price": 1000,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "ممرض علي بوزيد",
+                    "specialty": "تمريض عام",
+                    "experience": "8 سنة"
+                },
+                "equipment": null
+            },
+            {
+                "serviceId": "nur_002",
+                "name": "رعاية منزلية",
+                "price": 3000,
+                "turnaround": "حسب الطلب",
+                "doctor": {
+                    "name": "ممرضة فتيحة حمادي",
+                    "specialty": "تمريض منزلي",
+                    "experience": "12 سنة"
+                },
+                "equipment": {
+                    "name": "معدات تمريض متنقلة",
+                    "type": "حقيبة طبية كاملة",
+                    "origin": "محلي"
+                }
+            },
+            {
+                "serviceId": "nur_003",
+                "name": "حقن (Injections)",
+                "price": 500,
+                "turnaround": "فوري",
+                "doctor": {
+                    "name": "ممرض علي بوزيد",
+                    "specialty": "تمريض عام",
+                    "experience": "8 سنة"
+                },
+                "equipment": null
             }
         ]
     },
@@ -198,22 +733,6 @@
                 "equipment": {
                     "name": "Abbott Architect c8000",
                     "type": "محلل كيميائي",
-                    "origin": "أمريكا"
-                }
-            },
-            {
-                "serviceId": "lab_007",
-                "name": "تحليل الغدة الدرقية (TSH, T3, T4)",
-                "price": 4000,
-                "turnaround": "24 ساعة",
-                "doctor": {
-                    "name": "د. سمية بن عمر",
-                    "specialty": "بيولوجي طبي",
-                    "experience": "20 سنة"
-                },
-                "equipment": {
-                    "name": "Abbott Architect i2000SR",
-                    "type": "محلل مناعي",
                     "origin": "أمريكا"
                 }
             }
@@ -294,22 +813,6 @@
                     "type": "محلل دموي",
                     "origin": "الصين"
                 }
-            },
-            {
-                "serviceId": "lab_002",
-                "name": "تحليل السكر (Glycémie)",
-                "price": 450,
-                "turnaround": "2 ساعة",
-                "doctor": {
-                    "name": "د. نادية بلحاج",
-                    "specialty": "بيولوجي طبي",
-                    "experience": "18 سنة"
-                },
-                "equipment": {
-                    "name": "Mindray BS-800",
-                    "type": "محلل كيميائي",
-                    "origin": "الصين"
-                }
             }
         ]
     },
@@ -376,38 +879,6 @@
                     "type": "جهاز رنين مغناطيسي",
                     "origin": "ألمانيا"
                 }
-            },
-            {
-                "serviceId": "img_004",
-                "name": "سكانير (Scanner / TDM)",
-                "price": 15000,
-                "turnaround": "موعد",
-                "doctor": {
-                    "name": "د. خالد مسعودي",
-                    "specialty": "أخصائي أشعة",
-                    "experience": "14 سنة"
-                },
-                "equipment": {
-                    "name": "GE Revolution CT",
-                    "type": "سكانير 256 شريحة",
-                    "origin": "أمريكا"
-                }
-            },
-            {
-                "serviceId": "img_002",
-                "name": "إيكوغراف (Echographie)",
-                "price": 3500,
-                "turnaround": "فوري",
-                "doctor": {
-                    "name": "د. آمال بن يحيى",
-                    "specialty": "أخصائية أشعة",
-                    "experience": "9 سنة"
-                },
-                "equipment": {
-                    "name": "Philips EPIQ Elite",
-                    "type": "جهاز إيكوغراف متقدم",
-                    "origin": "هولندا"
-                }
             }
         ]
     },
@@ -441,38 +912,6 @@
                     "type": "جهاز تنظيف بالهواء",
                     "origin": "سويسرا"
                 }
-            },
-            {
-                "serviceId": "cli_015",
-                "name": "تقويم أسنان (ODF)",
-                "price": 80000,
-                "turnaround": "علاج طويل",
-                "doctor": {
-                    "name": "د. يوسف حداد",
-                    "specialty": "تقويم أسنان",
-                    "experience": "12 سنة"
-                },
-                "equipment": {
-                    "name": "Invisalign System",
-                    "type": "تقويم شفاف",
-                    "origin": "أمريكا"
-                }
-            },
-            {
-                "serviceId": "cli_016",
-                "name": "تبييض أسنان",
-                "price": 15000,
-                "turnaround": "جلسة واحدة",
-                "doctor": {
-                    "name": "د. سارة بوشاقور",
-                    "specialty": "طب أسنان",
-                    "experience": "7 سنة"
-                },
-                "equipment": {
-                    "name": "Philips Zoom WhiteSpeed",
-                    "type": "جهاز تبييض بالضوء",
-                    "origin": "هولندا"
-                }
             }
         ]
     },
@@ -505,22 +944,6 @@
                     "name": "Horiba ABX Pentra XL 80",
                     "type": "محلل دموي",
                     "origin": "فرنسا"
-                }
-            },
-            {
-                "serviceId": "lab_002",
-                "name": "تحليل السكر (Glycémie)",
-                "price": 400,
-                "turnaround": "3 ساعات",
-                "doctor": {
-                    "name": "د. عمر بوخالفة",
-                    "specialty": "بيولوجي طبي",
-                    "experience": "11 سنة"
-                },
-                "equipment": {
-                    "name": "Beckman Coulter AU480",
-                    "type": "محلل كيميائي",
-                    "origin": "أمريكا"
                 }
             }
         ]
