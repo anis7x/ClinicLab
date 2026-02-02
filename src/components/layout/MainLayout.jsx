@@ -73,9 +73,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2 group">
-                        <div className="bg-gradient-to-tr from-accent to-primary p-2 rounded-lg transition-transform group-hover:scale-105 shadow-lg shadow-primary/20">
-                            <Activity className="h-6 w-6 text-white" />
-                        </div>
+                        <img src="/logo.png" alt="ClinicaLab Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
                         <span className="text-2xl font-bold text-slate-900 tracking-wide">
                             ClinicLab
                         </span>
