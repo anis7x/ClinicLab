@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
+import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Menu, X, Facebook, Instagram, Mail } from 'lucide-react';
+import { Activity, Menu, X, Facebook, Instagram, Mail, LogOut, User } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useAuth } from '../../context/AuthContext';
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -62,6 +63,8 @@ import logo from '../../assets/logo.png';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useAuth();
 
     const navLinks = [
         { name: 'الرئيسية', path: '/' },
@@ -105,15 +108,33 @@ const Navbar = () => {
 
                     {/* CTA Buttons */}
                     <div className="hidden md:flex items-center gap-4">
-                        <Link to="/auth/login" className="text-slate-600 hover:text-primary transition-colors text-sm font-medium">
-                            دخول المرضى
-                        </Link>
-                        <Link
-                            to="/auth/register/professional"
-                            className="bg-primary text-white hover:bg-primary/90 px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95"
-                        >
-                            انضم إلينا كشريك
-                        </Link>
+                        {isAuthenticated ? (
+                            <>
+                                <div className="flex items-center gap-2 text-sm text-slate-600">
+                                    <User className="w-4 h-4 text-primary" />
+                                    <span className="font-medium">{user?.full_name || user?.business_name || user?.email}</span>
+                                </div>
+                                <button
+                                    onClick={() => { logout(); navigate('/'); }}
+                                    className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors text-sm font-medium"
+                                >
+                                    <LogOut className="w-4 h-4" />
+                                    خروج
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/auth/login" className="text-slate-600 hover:text-primary transition-colors text-sm font-medium">
+                                    دخول المرضى
+                                </Link>
+                                <Link
+                                    to="/auth/register/professional"
+                                    className="bg-primary text-white hover:bg-primary/90 px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95"
+                                >
+                                    انضم إلينا كشريك
+                                </Link>
+                            </>
+                        )}
                     </div>
 
                     {/* Mobile Menu Button - Enhanced Design */}

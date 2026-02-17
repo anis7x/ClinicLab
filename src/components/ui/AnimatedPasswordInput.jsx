@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
-export default function AnimatedPasswordInput({ placeholder = "" }) {
+export default function AnimatedPasswordInput({ placeholder = "", value, onChange, ...props }) {
     const [showPassword, setShowPassword] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
 
@@ -10,10 +10,13 @@ export default function AnimatedPasswordInput({ placeholder = "" }) {
             <input
                 type={showPassword ? "text" : "password"}
                 placeholder={placeholder}
+                value={value}
+                onChange={onChange}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg py-3 pr-4 pl-12 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary transition-colors text-right focus:bg-white"
                 dir="rtl"
+                {...props}
             />
 
             <button
