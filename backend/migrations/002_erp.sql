@@ -1,7 +1,6 @@
--- ClinicLab ERP Schema
--- Migration 002: ERP modules for Clinic El Widad
--- Modules: Reception, Patients/EMR, Appointments, Billing, Dashboard,
---          Hospitalization, Operating Theater, Laboratory, HR, Accounting
+-- ClinicLab ERP Schema (Multi-Tenant SaaS)
+-- Migration 002: ERP modules - each organization is a tenant
+-- Tables reference org_id to isolate data per clinic/lab
 
 -- =====================================================
 -- ENUM TYPES
@@ -23,27 +22,79 @@ DO $$ BEGIN CREATE TYPE staff_role AS ENUM ('DOCTOR', 'NURSE', 'RECEPTIONIST', '
 DO $$ BEGIN CREATE TYPE contract_type AS ENUM ('CDI', 'CDD', 'FREELANCE', 'INTERN'); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE TYPE leave_type AS ENUM ('ANNUAL', 'SICK', 'MATERNITY', 'PATERNITY', 'UNPAID', 'OTHER'); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE TYPE leave_status AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE TYPE org_type AS ENUM ('CLINIC', 'LAB'); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- =====================================================
--- MODULE 1: RECEPTION (check-in, queue)
+-- MULTI-TENANT: ORGANIZATIONS
+-- Created when a professional registers (اسم المؤسسة)
 -- =====================================================
 
--- Clinic departments/services
-CREATE TABLE IF NOT EXISTS departments (
+CREATE TABLE IF NOT EXISTS organizations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name_ar VARCHAR(255) NOT NULL,
-    name_fr VARCHAR(255) NOT NULL,
-    code VARCHAR(20) UNIQUE NOT NULL,
-    floor_number INT DEFAULT 0,
+    owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- From registration form
+    name VARCHAR(255) NOT NULL,              -- اسم المؤسسة (business_name)
+    org_type org_type NOT NULL DEFAULT 'CLINIC',
+    phone VARCHAR(50),
+    address TEXT,
+    wilaya_id VARCHAR(5) REFERENCES wilayas(id),
+    city VARCHAR(100),
+
+    -- Branding
+    logo_url TEXT,
+
+    -- Settings (per-org config)
+    default_language VARCHAR(5) DEFAULT 'ar',
+    currency VARCHAR(10) DEFAULT 'DZD',
+    cnas_coverage_pct INT DEFAULT 80,
+    ald_coverage_pct INT DEFAULT 100,
+    invoice_prefix VARCHAR(10) DEFAULT 'INV',
+    fiscal_year_start VARCHAR(5) DEFAULT '01-01',
+
+    -- Subscription (from profiles_professional)
     is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Staff members (must be created early — referenced by many modules)
+-- Link users to organizations (many users per org, e.g. doctors, nurses)
+CREATE TABLE IF NOT EXISTS org_members (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role staff_role NOT NULL DEFAULT 'ADMIN',
+    is_active BOOLEAN DEFAULT TRUE,
+    joined_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(org_id, user_id)
+);
+
+-- =====================================================
+-- DEPARTMENTS (per org)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS departments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    name_ar VARCHAR(255) NOT NULL,
+    name_fr VARCHAR(255) NOT NULL,
+    code VARCHAR(20) NOT NULL,
+    floor_number INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(org_id, code)
+);
+
+-- =====================================================
+-- STAFF (per org — doctors, nurses, admin)
+-- =====================================================
+
 CREATE TABLE IF NOT EXISTS staff (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    
+
     -- Identity
     full_name_ar VARCHAR(255) NOT NULL,
     full_name_fr VARCHAR(255),
@@ -53,7 +104,7 @@ CREATE TABLE IF NOT EXISTS staff (
     phone VARCHAR(50),
     email VARCHAR(255),
     address TEXT,
-    
+
     -- Job
     staff_role staff_role NOT NULL,
     specialty_ar VARCHAR(100),
@@ -62,35 +113,34 @@ CREATE TABLE IF NOT EXISTS staff (
     contract_type contract_type DEFAULT 'CDI',
     hire_date DATE,
     end_date DATE,
-    
+
     -- Salary
     base_salary NUMERIC(12,2) DEFAULT 0,
-    
+
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
--- MODULE 2: PATIENTS / EMR
+-- PATIENTS / EMR (per org)
 -- =====================================================
 
--- Extended patient records (ERP-level, separate from platform patient profiles)
 CREATE TABLE IF NOT EXISTS erp_patients (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    -- Link to platform user (optional, for patients who registered online)
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     platform_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    
+
     -- Identity
-    nin VARCHAR(30) UNIQUE,               -- National ID number (NIN)
-    chifa_number VARCHAR(30),             -- CHIFA card number
+    nin VARCHAR(30),
+    chifa_number VARCHAR(30),
     full_name_ar VARCHAR(255) NOT NULL,
     full_name_fr VARCHAR(255),
     date_of_birth DATE,
     gender gender_type,
     blood_type blood_type,
     marital_status marital_status,
-    
+
     -- Contact
     phone VARCHAR(50),
     phone_secondary VARCHAR(50),
@@ -98,56 +148,58 @@ CREATE TABLE IF NOT EXISTS erp_patients (
     address TEXT,
     wilaya_id VARCHAR(5) REFERENCES wilayas(id),
     city VARCHAR(100),
-    
+
     -- Insurance
     insurance_type insurance_type DEFAULT 'NONE',
     insurance_number VARCHAR(50),
-    insurance_holder_name VARCHAR(255),     -- If insured under someone else
-    insurance_coverage_pct INT DEFAULT 80,  -- CNAS default 80%
-    is_ald BOOLEAN DEFAULT FALSE,           -- Chronic illness = 100% coverage
-    
+    insurance_holder_name VARCHAR(255),
+    insurance_coverage_pct INT DEFAULT 80,
+    is_ald BOOLEAN DEFAULT FALSE,
+
     -- Medical
     allergies TEXT,
     chronic_conditions TEXT,
     notes TEXT,
-    
+
     -- Emergency contact
     emergency_name VARCHAR(255),
     emergency_phone VARCHAR(50),
     emergency_relation VARCHAR(50),
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Medical visit history
+-- Medical visits
 CREATE TABLE IF NOT EXISTS medical_visits (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES erp_patients(id) ON DELETE CASCADE,
     doctor_id UUID REFERENCES staff(id),
     department_id UUID REFERENCES departments(id),
-    
+
     visit_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    chief_complaint TEXT,                   -- سبب الزيارة
-    diagnosis TEXT,                         -- التشخيص
-    diagnosis_code VARCHAR(20),             -- ICD-10 code
+    chief_complaint TEXT,
+    diagnosis TEXT,
+    diagnosis_code VARCHAR(20),
     treatment_plan TEXT,
     notes TEXT,
-    vitals JSONB,                           -- {bp, pulse, temp, weight, height, spo2}
-    
+    vitals JSONB,
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Prescriptions
 CREATE TABLE IF NOT EXISTS prescriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     visit_id UUID REFERENCES medical_visits(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES erp_patients(id) ON DELETE CASCADE,
     doctor_id UUID REFERENCES staff(id),
-    
+
     prescription_date DATE DEFAULT CURRENT_DATE,
     notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -155,55 +207,54 @@ CREATE TABLE IF NOT EXISTS prescription_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     prescription_id UUID NOT NULL REFERENCES prescriptions(id) ON DELETE CASCADE,
     medication_name VARCHAR(255) NOT NULL,
-    dosage VARCHAR(100),          -- e.g. "500mg"
-    frequency VARCHAR(100),       -- e.g. "3 times daily"
-    duration VARCHAR(100),        -- e.g. "7 days"
+    dosage VARCHAR(100),
+    frequency VARCHAR(100),
+    duration VARCHAR(100),
     quantity INT,
-    instructions TEXT              -- e.g. "after meals"
+    instructions TEXT
 );
 
 -- =====================================================
--- MODULE 3: APPOINTMENTS
+-- APPOINTMENTS (per org)
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS appointments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES erp_patients(id) ON DELETE CASCADE,
     doctor_id UUID REFERENCES staff(id),
     department_id UUID REFERENCES departments(id),
-    
+
     scheduled_at TIMESTAMP WITH TIME ZONE NOT NULL,
     duration_minutes INT DEFAULT 30,
     status appointment_status DEFAULT 'SCHEDULED',
-    
-    reason TEXT,                   -- Reason for visit
+
+    reason TEXT,
     notes TEXT,
     is_walk_in BOOLEAN DEFAULT FALSE,
-    queue_number INT,              -- For walk-in queue management
-    
-    -- Reminders
+    queue_number INT,
+
     reminder_sent BOOLEAN DEFAULT FALSE,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
--- MODULE 4: HOSPITALIZATION (Admission / Discharge)
+-- HOSPITALIZATION (per org)
 -- =====================================================
 
--- Rooms in the clinic
 CREATE TABLE IF NOT EXISTS rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     department_id UUID REFERENCES departments(id),
     room_number VARCHAR(20) NOT NULL,
-    room_type VARCHAR(50) NOT NULL,       -- 'SINGLE', 'SHARED', 'VIP', 'ICU'
+    room_type VARCHAR(50) NOT NULL,
     floor_number INT DEFAULT 0,
-    daily_rate NUMERIC(10,2) DEFAULT 0,   -- Price per day
+    daily_rate NUMERIC(10,2) DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Beds within rooms
 CREATE TABLE IF NOT EXISTS beds (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     room_id UUID NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
@@ -211,35 +262,34 @@ CREATE TABLE IF NOT EXISTS beds (
     status bed_status DEFAULT 'AVAILABLE'
 );
 
--- Hospital admissions
 CREATE TABLE IF NOT EXISTS admissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES erp_patients(id) ON DELETE CASCADE,
     bed_id UUID REFERENCES beds(id),
     admitting_doctor_id UUID REFERENCES staff(id),
     department_id UUID REFERENCES departments(id),
-    
+
     admission_type admission_type DEFAULT 'PLANNED',
     status admission_status DEFAULT 'ADMITTED',
-    
+
     admitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     discharged_at TIMESTAMP WITH TIME ZONE,
-    
+
     admission_reason TEXT,
     diagnosis TEXT,
     discharge_summary TEXT,
     discharge_prescriptions TEXT,
     follow_up_notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Nursing notes during admission
 CREATE TABLE IF NOT EXISTS nursing_notes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     admission_id UUID NOT NULL REFERENCES admissions(id) ON DELETE CASCADE,
     nurse_id UUID REFERENCES staff(id),
-    
+
     note_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     vitals JSONB,
     medications_given TEXT,
@@ -248,61 +298,57 @@ CREATE TABLE IF NOT EXISTS nursing_notes (
 );
 
 -- =====================================================
--- MODULE 5: OPERATING THEATER
+-- OPERATING THEATER (per org)
 -- =====================================================
 
--- Operating rooms
 CREATE TABLE IF NOT EXISTS operating_rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     name_ar VARCHAR(100) NOT NULL,
     name_fr VARCHAR(100) NOT NULL,
-    code VARCHAR(20) UNIQUE NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE
+    code VARCHAR(20) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    UNIQUE(org_id, code)
 );
 
--- Surgeries
 CREATE TABLE IF NOT EXISTS surgeries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES erp_patients(id) ON DELETE CASCADE,
     admission_id UUID REFERENCES admissions(id),
     operating_room_id UUID REFERENCES operating_rooms(id),
-    
-    -- Team
+
     surgeon_id UUID REFERENCES staff(id),
     anesthetist_id UUID REFERENCES staff(id),
-    
-    -- Details
+
     procedure_name_ar VARCHAR(255),
     procedure_name_fr VARCHAR(255),
-    procedure_code VARCHAR(50),           -- NGAP code
-    
+    procedure_code VARCHAR(50),
+
     status surgery_status DEFAULT 'SCHEDULED',
     scheduled_at TIMESTAMP WITH TIME ZONE,
     started_at TIMESTAMP WITH TIME ZONE,
     ended_at TIMESTAMP WITH TIME ZONE,
-    
-    -- Pre-op
+
     consent_signed BOOLEAN DEFAULT FALSE,
     fasting_confirmed BOOLEAN DEFAULT FALSE,
     pre_op_notes TEXT,
-    
-    -- Intra-op
+
     anesthesia_type VARCHAR(100),
     operative_notes TEXT,
     complications TEXT,
-    
-    -- Post-op
+
     post_op_notes TEXT,
     recovery_notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
--- MODULE 6: BILLING / INVOICING
+-- BILLING / INVOICING (per org)
 -- =====================================================
 
--- NGAP medical acts catalog
+-- NGAP acts catalog (shared across all orgs — platform-wide reference)
 CREATE TABLE IF NOT EXISTS ngap_acts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(20) UNIQUE NOT NULL,
@@ -310,98 +356,106 @@ CREATE TABLE IF NOT EXISTS ngap_acts (
     name_fr VARCHAR(255) NOT NULL,
     category_ar VARCHAR(100),
     category_fr VARCHAR(100),
-    base_price NUMERIC(10,2) NOT NULL DEFAULT 0,       -- Clinic price
-    cnas_tariff NUMERIC(10,2) DEFAULT 0,               -- CNAS reimbursement rate
+    base_price NUMERIC(10,2) NOT NULL DEFAULT 0,
+    cnas_tariff NUMERIC(10,2) DEFAULT 0,
     is_reimbursable BOOLEAN DEFAULT TRUE,
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Invoices
+-- Per-org price overrides (clinics set their own prices)
+CREATE TABLE IF NOT EXISTS org_act_prices (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    ngap_act_id UUID NOT NULL REFERENCES ngap_acts(id) ON DELETE CASCADE,
+    custom_price NUMERIC(10,2) NOT NULL,
+    UNIQUE(org_id, ngap_act_id)
+);
+
 CREATE TABLE IF NOT EXISTS invoices (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    invoice_number VARCHAR(50) UNIQUE NOT NULL,         -- Format: YYYY-NNNN
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    invoice_number VARCHAR(50) NOT NULL,
     patient_id UUID NOT NULL REFERENCES erp_patients(id),
     visit_id UUID REFERENCES medical_visits(id),
     admission_id UUID REFERENCES admissions(id),
     surgery_id UUID REFERENCES surgeries(id),
-    
+
     status invoice_status DEFAULT 'DRAFT',
-    
-    -- Amounts
+
     subtotal NUMERIC(12,2) DEFAULT 0,
-    cnas_coverage NUMERIC(12,2) DEFAULT 0,             -- Amount covered by CNAS
-    mutual_coverage NUMERIC(12,2) DEFAULT 0,           -- Mutuelle coverage
-    patient_amount NUMERIC(12,2) DEFAULT 0,            -- Patient co-pay
+    cnas_coverage NUMERIC(12,2) DEFAULT 0,
+    mutual_coverage NUMERIC(12,2) DEFAULT 0,
+    patient_amount NUMERIC(12,2) DEFAULT 0,
     discount NUMERIC(12,2) DEFAULT 0,
     total NUMERIC(12,2) DEFAULT 0,
     paid_amount NUMERIC(12,2) DEFAULT 0,
     remaining NUMERIC(12,2) DEFAULT 0,
-    
+
     issued_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     due_at TIMESTAMP WITH TIME ZONE,
     paid_at TIMESTAMP WITH TIME ZONE,
-    
+
     notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(org_id, invoice_number)
 );
 
--- Invoice line items
 CREATE TABLE IF NOT EXISTS invoice_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     invoice_id UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
     ngap_act_id UUID REFERENCES ngap_acts(id),
-    
+
     description_ar VARCHAR(255) NOT NULL,
     description_fr VARCHAR(255),
     quantity INT DEFAULT 1,
     unit_price NUMERIC(10,2) NOT NULL,
     total NUMERIC(10,2) NOT NULL,
-    
+
     is_cnas_covered BOOLEAN DEFAULT FALSE,
-    cnas_rate NUMERIC(10,2) DEFAULT 0               -- CNAS reimbursement for this item
+    cnas_rate NUMERIC(10,2) DEFAULT 0
 );
 
--- Payments
 CREATE TABLE IF NOT EXISTS payments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     invoice_id UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
-    
+
     amount NUMERIC(12,2) NOT NULL,
     method payment_method NOT NULL,
-    reference VARCHAR(100),                           -- Check number, transfer ref, etc.
-    
+    reference VARCHAR(100),
+
     paid_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     received_by UUID REFERENCES staff(id),
     notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- CNAS claims tracking
 CREATE TABLE IF NOT EXISTS cnas_claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     invoice_id UUID NOT NULL REFERENCES invoices(id),
     patient_id UUID NOT NULL REFERENCES erp_patients(id),
-    
+
     claim_amount NUMERIC(12,2) NOT NULL,
     submitted_at TIMESTAMP WITH TIME ZONE,
-    status VARCHAR(30) DEFAULT 'PENDING',            -- PENDING, SUBMITTED, APPROVED, REJECTED, PAID
+    status VARCHAR(30) DEFAULT 'PENDING',
     reimbursed_amount NUMERIC(12,2),
     reimbursed_at TIMESTAMP WITH TIME ZONE,
-    
+
     rejection_reason TEXT,
     notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
--- MODULE 7: LABORATORY
+-- LABORATORY (per org)
 -- =====================================================
 
--- Lab test catalog
+-- Lab test catalog (shared platform-wide reference)
 CREATE TABLE IF NOT EXISTS lab_tests_catalog (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(20) UNIQUE NOT NULL,
@@ -415,168 +469,160 @@ CREATE TABLE IF NOT EXISTS lab_tests_catalog (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Lab orders
 CREATE TABLE IF NOT EXISTS lab_orders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES erp_patients(id) ON DELETE CASCADE,
     ordering_doctor_id UUID REFERENCES staff(id),
     visit_id UUID REFERENCES medical_visits(id),
-    
-    order_number VARCHAR(50) UNIQUE NOT NULL,
+
+    order_number VARCHAR(50) NOT NULL,
     ordered_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    priority VARCHAR(20) DEFAULT 'NORMAL',          -- NORMAL, URGENT
+    priority VARCHAR(20) DEFAULT 'NORMAL',
     notes TEXT,
-    
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(org_id, order_number)
 );
 
--- Lab order items (individual tests)
 CREATE TABLE IF NOT EXISTS lab_order_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     lab_order_id UUID NOT NULL REFERENCES lab_orders(id) ON DELETE CASCADE,
     test_id UUID NOT NULL REFERENCES lab_tests_catalog(id),
-    
+
     status lab_test_status DEFAULT 'ORDERED',
     result_value VARCHAR(255),
     result_unit VARCHAR(50),
     is_abnormal BOOLEAN DEFAULT FALSE,
-    
+
     sample_collected_at TIMESTAMP WITH TIME ZONE,
     completed_at TIMESTAMP WITH TIME ZONE,
     validated_by UUID REFERENCES staff(id),
     validated_at TIMESTAMP WITH TIME ZONE,
-    
+
     notes TEXT
 );
 
 -- =====================================================
--- MODULE 8: HR (shifts, leave, payroll — staff table created above)
+-- HR: SHIFTS, LEAVE, PAYROLL (per org)
 -- =====================================================
 
--- Shift scheduling
 CREATE TABLE IF NOT EXISTS shifts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     staff_id UUID NOT NULL REFERENCES staff(id) ON DELETE CASCADE,
-    
+
     shift_date DATE NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    shift_type VARCHAR(30) DEFAULT 'REGULAR',       -- REGULAR, NIGHT, GUARD
-    
+    shift_type VARCHAR(30) DEFAULT 'REGULAR',
+
     notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Leave requests
 CREATE TABLE IF NOT EXISTS leave_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     staff_id UUID NOT NULL REFERENCES staff(id) ON DELETE CASCADE,
-    
+
     leave_type leave_type NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     days_count INT NOT NULL,
-    
+
     status leave_status DEFAULT 'PENDING',
     approved_by UUID REFERENCES staff(id),
-    
+
     reason TEXT,
     notes TEXT,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Payroll records
 CREATE TABLE IF NOT EXISTS payroll (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     staff_id UUID NOT NULL REFERENCES staff(id) ON DELETE CASCADE,
-    
+
     pay_period_start DATE NOT NULL,
     pay_period_end DATE NOT NULL,
-    
-    -- Earnings
+
     base_salary NUMERIC(12,2) NOT NULL,
     overtime_hours NUMERIC(6,2) DEFAULT 0,
     overtime_amount NUMERIC(12,2) DEFAULT 0,
     bonuses NUMERIC(12,2) DEFAULT 0,
     gross_salary NUMERIC(12,2) NOT NULL,
-    
-    -- Deductions (Algerian law)
-    cnas_employee NUMERIC(12,2) DEFAULT 0,         -- 9% employee contribution
-    cnas_employer NUMERIC(12,2) DEFAULT 0,         -- 26% employer contribution
-    irg NUMERIC(12,2) DEFAULT 0,                   -- Income tax (IRG)
+
+    cnas_employee NUMERIC(12,2) DEFAULT 0,
+    cnas_employer NUMERIC(12,2) DEFAULT 0,
+    irg NUMERIC(12,2) DEFAULT 0,
     other_deductions NUMERIC(12,2) DEFAULT 0,
-    
+
     net_salary NUMERIC(12,2) NOT NULL,
-    
+
     paid BOOLEAN DEFAULT FALSE,
     paid_at TIMESTAMP WITH TIME ZONE,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
--- MODULE 9: ACCOUNTING (basic)
+-- ACCOUNTING (per org)
 -- =====================================================
 
--- Chart of accounts (SCF - Système Comptable Financier)
 CREATE TABLE IF NOT EXISTS chart_of_accounts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    code VARCHAR(20) UNIQUE NOT NULL,
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    code VARCHAR(20) NOT NULL,
     name_ar VARCHAR(255) NOT NULL,
     name_fr VARCHAR(255) NOT NULL,
-    account_type VARCHAR(30) NOT NULL,              -- ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE
+    account_type VARCHAR(30) NOT NULL,
     parent_code VARCHAR(20),
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    UNIQUE(org_id, code)
 );
 
--- Journal entries
 CREATE TABLE IF NOT EXISTS journal_entries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    entry_number VARCHAR(50) UNIQUE NOT NULL,
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    entry_number VARCHAR(50) NOT NULL,
     entry_date DATE NOT NULL DEFAULT CURRENT_DATE,
     description TEXT,
-    reference VARCHAR(100),                          -- Invoice number, payroll ref, etc.
-    
+    reference VARCHAR(100),
+
     created_by UUID REFERENCES staff(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(org_id, entry_number)
 );
 
--- Journal entry lines (double-entry)
 CREATE TABLE IF NOT EXISTS journal_lines (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     entry_id UUID NOT NULL REFERENCES journal_entries(id) ON DELETE CASCADE,
     account_id UUID NOT NULL REFERENCES chart_of_accounts(id),
-    
+
     debit NUMERIC(12,2) DEFAULT 0,
     credit NUMERIC(12,2) DEFAULT 0,
     description TEXT
 );
 
 -- =====================================================
--- MODULE 10: SETTINGS & CLINIC CONFIG
+-- AUDIT LOG (per org)
 -- =====================================================
 
--- Clinic configuration
-CREATE TABLE IF NOT EXISTS clinic_config (
-    key VARCHAR(100) PRIMARY KEY,
-    value TEXT NOT NULL,
-    description TEXT
-);
-
--- Audit log for sensitive operations
 CREATE TABLE IF NOT EXISTS audit_log (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id),
     staff_id UUID REFERENCES staff(id),
-    
+
     action VARCHAR(100) NOT NULL,
     entity_type VARCHAR(50),
     entity_id UUID,
     old_values JSONB,
     new_values JSONB,
     ip_address VARCHAR(50),
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -584,79 +630,74 @@ CREATE TABLE IF NOT EXISTS audit_log (
 -- INDEXES
 -- =====================================================
 
+-- Organizations
+CREATE INDEX IF NOT EXISTS idx_organizations_owner ON organizations(owner_id);
+CREATE INDEX IF NOT EXISTS idx_org_members_org ON org_members(org_id);
+CREATE INDEX IF NOT EXISTS idx_org_members_user ON org_members(user_id);
+
+-- Departments
+CREATE INDEX IF NOT EXISTS idx_departments_org ON departments(org_id);
+
+-- Staff
+CREATE INDEX IF NOT EXISTS idx_staff_org ON staff(org_id);
+CREATE INDEX IF NOT EXISTS idx_staff_role ON staff(staff_role);
+CREATE INDEX IF NOT EXISTS idx_staff_department ON staff(department_id);
+
+-- Patients
+CREATE INDEX IF NOT EXISTS idx_erp_patients_org ON erp_patients(org_id);
 CREATE INDEX IF NOT EXISTS idx_erp_patients_nin ON erp_patients(nin);
 CREATE INDEX IF NOT EXISTS idx_erp_patients_chifa ON erp_patients(chifa_number);
 CREATE INDEX IF NOT EXISTS idx_erp_patients_name ON erp_patients(full_name_ar);
 CREATE INDEX IF NOT EXISTS idx_erp_patients_phone ON erp_patients(phone);
 
+-- Visits
+CREATE INDEX IF NOT EXISTS idx_medical_visits_org ON medical_visits(org_id);
+CREATE INDEX IF NOT EXISTS idx_medical_visits_patient ON medical_visits(patient_id);
+CREATE INDEX IF NOT EXISTS idx_medical_visits_date ON medical_visits(visit_date);
+
+-- Appointments
+CREATE INDEX IF NOT EXISTS idx_appointments_org ON appointments(org_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_patient ON appointments(patient_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_doctor ON appointments(doctor_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(scheduled_at);
 CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
 
+-- Admissions
+CREATE INDEX IF NOT EXISTS idx_admissions_org ON admissions(org_id);
 CREATE INDEX IF NOT EXISTS idx_admissions_patient ON admissions(patient_id);
 CREATE INDEX IF NOT EXISTS idx_admissions_status ON admissions(status);
 
+-- Surgeries
+CREATE INDEX IF NOT EXISTS idx_surgeries_org ON surgeries(org_id);
 CREATE INDEX IF NOT EXISTS idx_surgeries_patient ON surgeries(patient_id);
 CREATE INDEX IF NOT EXISTS idx_surgeries_date ON surgeries(scheduled_at);
 CREATE INDEX IF NOT EXISTS idx_surgeries_status ON surgeries(status);
 
+-- Invoices
+CREATE INDEX IF NOT EXISTS idx_invoices_org ON invoices(org_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_patient ON invoices(patient_id);
-CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number);
 CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
 CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(issued_at);
 
+-- Lab
+CREATE INDEX IF NOT EXISTS idx_lab_orders_org ON lab_orders(org_id);
 CREATE INDEX IF NOT EXISTS idx_lab_orders_patient ON lab_orders(patient_id);
-CREATE INDEX IF NOT EXISTS idx_lab_orders_number ON lab_orders(order_number);
 
-CREATE INDEX IF NOT EXISTS idx_staff_role ON staff(staff_role);
-CREATE INDEX IF NOT EXISTS idx_staff_department ON staff(department_id);
-
-CREATE INDEX IF NOT EXISTS idx_medical_visits_patient ON medical_visits(patient_id);
-CREATE INDEX IF NOT EXISTS idx_medical_visits_date ON medical_visits(visit_date);
-
+-- Payments
+CREATE INDEX IF NOT EXISTS idx_payments_org ON payments(org_id);
 CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id);
+CREATE INDEX IF NOT EXISTS idx_cnas_claims_org ON cnas_claims(org_id);
 CREATE INDEX IF NOT EXISTS idx_cnas_claims_status ON cnas_claims(status);
 
+-- Audit
+CREATE INDEX IF NOT EXISTS idx_audit_log_org ON audit_log(org_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_entity ON audit_log(entity_type, entity_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_user ON audit_log(user_id);
 
 -- =====================================================
--- SEED: Default clinic config
+-- SEED: Platform-wide reference data (NGAP acts, lab tests)
 -- =====================================================
 
-INSERT INTO clinic_config (key, value, description) VALUES
-    ('clinic_name_ar', 'عيادة الوداد', 'Clinic name in Arabic'),
-    ('clinic_name_fr', 'Clinique El Widad', 'Clinic name in French'),
-    ('clinic_city', 'خنشلة', 'City'),
-    ('clinic_wilaya', 'خنشلة', 'Wilaya'),
-    ('clinic_phone', '', 'Phone number'),
-    ('clinic_address_ar', 'خنشلة، الجزائر', 'Address in Arabic'),
-    ('clinic_address_fr', 'Khenchela, Algérie', 'Address in French'),
-    ('default_currency', 'DZD', 'Currency code'),
-    ('cnas_coverage_pct', '80', 'Default CNAS coverage percentage'),
-    ('ald_coverage_pct', '100', 'ALD (chronic) coverage percentage'),
-    ('invoice_prefix', 'WID', 'Invoice number prefix'),
-    ('fiscal_year_start', '01-01', 'Start of fiscal year (MM-DD)'),
-    ('default_language', 'ar', 'Default UI language')
-ON CONFLICT (key) DO NOTHING;
-
--- Seed: Default departments for a typical Algerian private clinic
-INSERT INTO departments (id, name_ar, name_fr, code) VALUES
-    (uuid_generate_v4(), 'الاستقبال', 'Accueil', 'RECEPTION'),
-    (uuid_generate_v4(), 'الطب العام', 'Médecine Générale', 'MED_GEN'),
-    (uuid_generate_v4(), 'الجراحة العامة', 'Chirurgie Générale', 'CHIR_GEN'),
-    (uuid_generate_v4(), 'أمراض النساء والتوليد', 'Gynécologie-Obstétrique', 'GYNAECO'),
-    (uuid_generate_v4(), 'طب الأطفال', 'Pédiatrie', 'PEDIATR'),
-    (uuid_generate_v4(), 'أمراض القلب', 'Cardiologie', 'CARDIO'),
-    (uuid_generate_v4(), 'الأشعة', 'Radiologie', 'RADIO'),
-    (uuid_generate_v4(), 'المختبر', 'Laboratoire', 'LAB'),
-    (uuid_generate_v4(), 'التخدير والإنعاش', 'Anesthésie-Réanimation', 'ANESTH'),
-    (uuid_generate_v4(), 'الطوارئ', 'Urgences', 'URGENCE'),
-    (uuid_generate_v4(), 'العيادات الخارجية', 'Consultations Externes', 'CONSULT')
-ON CONFLICT DO NOTHING;
-
--- Seed: Default NGAP acts (common acts for private clinics)
 INSERT INTO ngap_acts (id, code, name_ar, name_fr, category_ar, category_fr, base_price, cnas_tariff, is_reimbursable) VALUES
     (uuid_generate_v4(), 'C', 'استشارة طبية', 'Consultation médicale', 'استشارة', 'Consultation', 2500, 250, TRUE),
     (uuid_generate_v4(), 'CS', 'استشارة متخصصة', 'Consultation spécialisée', 'استشارة', 'Consultation', 4000, 500, TRUE),
@@ -680,7 +721,6 @@ INSERT INTO ngap_acts (id, code, name_ar, name_fr, category_ar, category_fr, bas
     (uuid_generate_v4(), 'CHIR_HERN', 'إصلاح الفتق', 'Cure de hernie', 'جراحة', 'Chirurgie', 100000, 25000, TRUE)
 ON CONFLICT (code) DO NOTHING;
 
--- Seed: Default lab tests catalog
 INSERT INTO lab_tests_catalog (id, code, name_ar, name_fr, category_ar, category_fr, price, normal_range, unit) VALUES
     (uuid_generate_v4(), 'FNS', 'تعداد الدم الكامل', 'NFS - Numération Formule Sanguine', 'أمراض الدم', 'Hématologie', 1500, '', ''),
     (uuid_generate_v4(), 'VS', 'سرعة التثفل', 'Vitesse de Sédimentation', 'أمراض الدم', 'Hématologie', 500, '< 20 mm/h', 'mm/h'),
@@ -699,11 +739,4 @@ INSERT INTO lab_tests_catalog (id, code, name_ar, name_fr, category_ar, category
     (uuid_generate_v4(), 'TSH', 'هرمون الغدة الدرقية', 'TSH ultra-sensible', 'هرمونات', 'Hormonologie', 2500, '0.27-4.20 mUI/L', 'mUI/L'),
     (uuid_generate_v4(), 'BHCG', 'اختبار الحمل', 'β-HCG', 'هرمونات', 'Hormonologie', 2000, '', 'mUI/mL'),
     (uuid_generate_v4(), 'PSA', 'مستضد البروستاتا', 'PSA Total', 'علامات ورمية', 'Marqueurs Tumoraux', 3000, '< 4.0 ng/mL', 'ng/mL')
-ON CONFLICT (code) DO NOTHING;
-
--- Seed: Operating rooms
-INSERT INTO operating_rooms (id, name_ar, name_fr, code) VALUES
-    (uuid_generate_v4(), 'غرفة العمليات 1', 'Salle d''opération 1', 'OR1'),
-    (uuid_generate_v4(), 'غرفة العمليات 2', 'Salle d''opération 2', 'OR2'),
-    (uuid_generate_v4(), 'غرفة الولادة', 'Salle d''accouchement', 'DELIV')
 ON CONFLICT (code) DO NOTHING;

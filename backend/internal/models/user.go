@@ -13,13 +13,33 @@ const (
 
 // User represents the core authentication entity.
 type User struct {
-	ID           string    `json:"id"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"-"` // never expose
-	Role         UserRole  `json:"role"`
-	IsVerified   bool      `json:"is_verified"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID                  string     `json:"id"`
+	Email               string     `json:"email"`
+	PasswordHash        string     `json:"-"`
+	Role                UserRole   `json:"role"`
+	IsVerified          bool       `json:"is_verified"`
+	Is2FAEnabled        bool       `json:"is_2fa_enabled"`
+	TOTPSecret          string     `json:"-"`
+	RecoveryCodes       []string   `json:"-"`
+	FailedLoginAttempts int        `json:"-"`
+	LockedUntil         *time.Time `json:"-"`
+	ActiveOrgID         *string    `json:"active_org_id,omitempty"`
+	CreatedAt           time.Time  `json:"created_at"`
+	UpdatedAt           time.Time  `json:"updated_at"`
+}
+
+// Organization represents a clinic or lab tenant.
+type Organization struct {
+	ID              string `json:"id"`
+	OwnerID         string `json:"owner_id"`
+	Name            string `json:"name"`
+	OrgType         string `json:"org_type"` // CLINIC or LAB
+	Phone           string `json:"phone,omitempty"`
+	Address         string `json:"address,omitempty"`
+	DefaultLanguage string `json:"default_language"`
+	Currency        string `json:"currency"`
+	IsActive        bool   `json:"is_active"`
+	CreatedAt       string `json:"created_at"`
 }
 
 // PatientProfile holds patient-specific data.
@@ -74,11 +94,34 @@ type LoginRequest struct {
 }
 
 type AuthResponse struct {
-	Token string      `json:"token"`
-	User  interface{} `json:"user"`
+	Token       string      `json:"token"`
+	User        interface{} `json:"user"`
+	Requires2FA bool        `json:"requires_2fa,omitempty"`
+	TempToken   string      `json:"temp_token,omitempty"` // Short-lived token for 2FA step
+	TOTPUri     string      `json:"totp_uri,omitempty"`   // QR provisioning URI (setup only)
+	Org         interface{} `json:"org,omitempty"`
 }
 
 type MeResponse struct {
 	User    User        `json:"user"`
 	Profile interface{} `json:"profile"`
+	Org     interface{} `json:"org,omitempty"`
+}
+
+// --- 2FA DTOs ---
+
+type Setup2FARequest struct {
+	Code string `json:"code"` // First valid TOTP code to confirm setup
+}
+
+type Setup2FAResponse struct {
+	RecoveryCodes []string `json:"recovery_codes"`
+	Message       string   `json:"message"`
+}
+
+type Verify2FARequest struct {
+	TempToken   string `json:"temp_token"`
+	Code        string `json:"code"`
+	TrustDevice bool   `json:"trust_device"`
+	DeviceName  string `json:"device_name,omitempty"`
 }

@@ -1,11 +1,12 @@
 // ClinicLab API Client
-// Centralized HTTP client with JWT management
+// Centralized HTTP client with JWT management + 2FA support
 
 const API_BASE = '/api';
 
 class ApiClient {
     constructor() {
         this.token = localStorage.getItem('cliniclab_token');
+        this.deviceToken = localStorage.getItem('cliniclab_device_token');
     }
 
     setToken(token) {
@@ -21,6 +22,15 @@ class ApiClient {
         return this.token;
     }
 
+    setDeviceToken(token) {
+        this.deviceToken = token;
+        if (token) {
+            localStorage.setItem('cliniclab_device_token', token);
+        } else {
+            localStorage.removeItem('cliniclab_device_token');
+        }
+    }
+
     async request(endpoint, options = {}) {
         const url = `${API_BASE}${endpoint}`;
         const headers = {
@@ -32,15 +42,26 @@ class ApiClient {
             headers['Authorization'] = `Bearer ${this.token}`;
         }
 
+        // Send trusted device token for 2FA bypass
+        if (this.deviceToken) {
+            headers['X-Device-Token'] = this.deviceToken;
+        }
+
         const response = await fetch(url, {
             ...options,
             headers,
         });
 
+        // Capture device token from response headers
+        const newDeviceToken = response.headers.get('X-Device-Token');
+        if (newDeviceToken) {
+            this.setDeviceToken(newDeviceToken);
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
-            throw new ApiError(data.error || 'حدث خطأ غير متوقع', response.status);
+            throw new ApiError(data.error || 'حدث خطأ غير متوقع', response.status, data);
         }
 
         return data;
@@ -70,7 +91,33 @@ class ApiClient {
             method: 'POST',
             body: JSON.stringify({ email, password }),
         });
-        this.setToken(result.token);
+        // Only set token if not 2FA required
+        if (result.token && !result.requires_2fa) {
+            this.setToken(result.token);
+        }
+        return result;
+    }
+
+    async setup2FA(code) {
+        return this.request('/auth/setup-2fa', {
+            method: 'POST',
+            body: JSON.stringify({ code }),
+        });
+    }
+
+    async verify2FA(tempToken, code, trustDevice = false, deviceName = '') {
+        const result = await this.request('/auth/verify-2fa', {
+            method: 'POST',
+            body: JSON.stringify({
+                temp_token: tempToken,
+                code,
+                trust_device: trustDevice,
+                device_name: deviceName,
+            }),
+        });
+        if (result.token) {
+            this.setToken(result.token);
+        }
         return result;
     }
 
@@ -107,9 +154,10 @@ class ApiClient {
 }
 
 class ApiError extends Error {
-    constructor(message, status) {
+    constructor(message, status, data = {}) {
         super(message);
         this.status = status;
+        this.data = data;
         this.name = 'ApiError';
     }
 }

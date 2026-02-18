@@ -12,15 +12,24 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [locked, setLocked] = useState(null); // { minutes_remaining }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLocked(null);
         setLoading(true);
 
         try {
             const result = await login(email, password);
-            // Redirect based on role
+
+            // 2FA required — redirect to verification
+            if (result.requires_2fa) {
+                navigate('/auth/verify-2fa');
+                return;
+            }
+
+            // Direct login — redirect based on role
             const role = result.user?.role;
             if (role === 'CLINIC_ADMIN' || role === 'LAB_ADMIN') {
                 navigate('/dashboard');
@@ -28,7 +37,12 @@ export default function Login() {
                 navigate('/');
             }
         } catch (err) {
-            setError(err.message || 'حدث خطأ أثناء تسجيل الدخول');
+            // Handle account lockout
+            if (err.data?.locked) {
+                setLocked({ minutes: err.data.minutes_remaining || 15 });
+            } else {
+                setError(err.message || 'حدث خطأ أثناء تسجيل الدخول');
+            }
         } finally {
             setLoading(false);
         }
@@ -41,6 +55,13 @@ export default function Login() {
             className="glass p-8 rounded-2xl bg-white border border-slate-200 shadow-xl"
         >
             <h2 className="text-2xl font-bold mb-6 text-center text-slate-900">مرحباً بعودتك</h2>
+
+            {locked && (
+                <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm text-center">
+                    <p className="font-semibold mb-1">🔒 الحساب مقفل مؤقتاً</p>
+                    <p>بسبب محاولات فاشلة متعددة. يمكنك المحاولة بعد {locked.minutes} دقيقة.</p>
+                </div>
+            )}
 
             {error && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm text-center">
@@ -83,7 +104,7 @@ export default function Login() {
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || locked}
                     className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-semibold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? (

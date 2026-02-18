@@ -38,6 +38,23 @@ func GenerateToken(userID, email, role string) (string, error) {
 	return token.SignedString(jwtSecret)
 }
 
+// GenerateTempToken creates a short-lived token (5 min) for 2FA verification step.
+func GenerateTempToken(userID, email, role string) (string, error) {
+	claims := Claims{
+		UserID: userID,
+		Email:  email,
+		Role:   role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "cliniclab-2fa",
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtSecret)
+}
+
 // ValidateToken parses and validates a JWT string.
 func ValidateToken(tokenStr string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (interface{}, error) {

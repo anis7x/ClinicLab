@@ -32,8 +32,8 @@ export default function RegisterProfessional() {
             setError('اسم المؤسسة، البريد الإلكتروني وكلمة المرور مطلوبة');
             return;
         }
-        if (form.password.length < 6) {
-            setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        if (form.password.length < 8) {
+            setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
             return;
         }
         if (form.password !== form.confirm_password) {
@@ -44,7 +44,7 @@ export default function RegisterProfessional() {
         setLoading(true);
         try {
             await registerProfessional(form);
-            navigate('/dashboard');
+            navigate('/auth/setup-2fa');
         } catch (err) {
             setError(err.message || 'حدث خطأ أثناء إنشاء الحساب');
         } finally {

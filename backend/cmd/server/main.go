@@ -78,11 +78,13 @@ func main() {
 			r.Post("/register/patient", handlers.RegisterPatient)
 			r.Post("/register/professional", handlers.RegisterProfessional)
 			r.Post("/login", handlers.Login)
+			r.Post("/verify-2fa", handlers.Verify2FA) // Public — uses temp token
 
-			// Protected
+			// Protected auth routes
 			r.Group(func(r chi.Router) {
 				r.Use(middleware.AuthRequired)
 				r.Get("/me", handlers.GetMe)
+				r.Post("/setup-2fa", handlers.Setup2FA)
 			})
 		})
 
@@ -128,6 +130,8 @@ func main() {
 	fmt.Println("   POST /api/auth/register/professional")
 	fmt.Println("   POST /api/auth/login")
 	fmt.Println("   GET  /api/auth/me")
+	fmt.Println("   POST /api/auth/setup-2fa")
+	fmt.Println("   POST /api/auth/verify-2fa")
 	fmt.Println("   GET  /api/providers/search?wilaya=&service=")
 	fmt.Println("   GET  /api/providers/{id}")
 	fmt.Println("   GET  /api/wilayas")
